@@ -1,9 +1,10 @@
 {% extends "forum/layouts/base.html" %}
+{% load static %}
 {% load humanize %}
 
 {% block body %}
     {% include "forum/components/navigation.html" %}
-    <div class="flex items-start m-2 flex-1">
+    <div class="flex items-start m-2 w-full flex-1">
         {% include "forum/components/sidebar.html" %}
         <div class="flex flex-col bg-white p-8 drop-shadow-sm rounded-xl mx-2 flex-1 h-full">
             <span class="text-xl font-Rubik font-medium pb-8 block">FORUM COMMUNITY</span>
@@ -44,7 +45,13 @@
                     {% endif %}
                 {% endfor %}
                 </tbody>
-</table>
+            </table>
+            {% if not threads|length %}
+                <a href="{% url 'new-thread' %}" class="flex flex-col items-center m-auto">
+                    <img class="w-[200px]" src="{% static 'img/no-content.png' %}" alt="no-content-image" />
+                    <span class="font-Poppins font-medium text-sm">Create new thread</span>
+                </a>
+            {% endif %}
         </div>
         {% include "forum/components/dashboard-stats.html" %}
     </div>

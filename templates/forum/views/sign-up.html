@@ -1,0 +1,74 @@
+{% extends "forum/layouts/base.html" %}
+{% load static %}
+
+{% block body %}
+    {% include "forum/components/navigation.html" %}
+    <div class="flex items-center flex-1 w-full transition-all duration-300 ease-in">
+        <div class="flex flex-1 items-center justify-center">
+            <div class="flex flex-col p-8 bg-white font-Poppins rounded-xl drop-shadow-sm max-w-[500px] w-full">
+                <div class="flex items-center text-xl font-bold pb-4 my-6 border-b">
+                    <span onclick="toggleForms()" id="sign-up-title" class="block cursor-pointer">SIGN UP</span>
+                    <span class="block mx-4">//</span>
+                    <span onclick="toggleForms()" id="log-in-title" class="block cursor-pointer text-gray-500">LOG IN</span>
+                </div>
+                {% if form %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <span class="text-sm p-2 bg-[#f8f8ff] border-l-4 border-red-400 mb-2"><b class="font-[600] mr-2">{{ field.label }}:</b> {{ error }}</span>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+                <form id="sign-up-form" method="post" class="flex flex-col flex-1">
+                    {% csrf_token %}
+                    <label class="my-2 flex text-sm items-center border-b">
+                        <i class="fas fa-user -mr-8 z-10 text-xs text-gray-500 block p-2"></i>
+                        <input value="{{ form.name.value|default_if_none:'' }}" class="p-4 px-10 w-full outline-none focus:bg-[#f8f8ff]" type="text" name="name" placeholder="Name" required autocomplete="name" />
+                    </label>
+                    <label class="my-2 flex text-sm  items-center border-b">
+                        <i class="fas fa-envelope -mr-8 z-10 text-xs text-gray-500 block p-2"></i>
+                        <input value="{{ form.email.value|default_if_none:'' }}" class="p-4 px-10 w-full outline-none focus:bg-[#f8f8ff]" type="email" name="email" placeholder="Email" required autocomplete="username" />
+                    </label>
+                    <label class="my-2 flex text-sm  items-center border-b">
+                        <i class="fas fa-key -mr-8 z-10 text-xs text-gray-500 block p-2"></i>
+                        <input class="p-4 px-10 w-full outline-none focus:bg-[#f8f8ff]" type="password" name="password" placeholder="New password" required autocomplete="new-password" minlength="6" />
+                    </label>
+                    <label class="my-2 flex text-sm  items-center border-b">
+                        <i class="fas fa-key -mr-8 z-10 text-xs text-gray-500 block p-2"></i>
+                        <input class="p-4 px-10 w-full outline-none focus:bg-[#f8f8ff]" type="password" name="confirm_password" placeholder="Confirm password" required autocomplete="new-password" minlength="6" />
+                    </label>
+                    <button type="submit" name="submit" class="p-2 text-sm w-full rounded-xl bg-black text-white mt-8">Sign Up</button>
+                    <a href="{% url 'login' %}" class="m-4 mb-6 text-sm text-center text-blue-600 hover:text-blue-400">have an account? log in</a>
+                </form>
+                <form id="log-in-form" method="post" class="flex flex-col flex-1 hidden">
+                    {% csrf_token %}
+                    <label class="my-2 flex text-sm  items-center border-b">
+                        <i class="fas fa-envelope -mr-8 z-10 text-xs text-gray-500 block p-2"></i>
+                        <input class="p-4 px-10 w-full outline-none focus:bg-[#f8f8ff]" type="email" name="email" placeholder="Email" required autocomplete="username" />
+                    </label>
+                    <label class="my-2 flex text-sm  items-center border-b">
+                        <i class="fas fa-key -mr-8 z-10 text-xs text-gray-500 block p-2"></i>
+                        <input class="p-4 px-10 w-full outline-none focus:bg-[#f8f8ff]" type="password" name="password" placeholder="Password" required autocomplete="current-password" />
+                    </label>
+                    <button type="submit" name="submit" class="p-2 text-sm w-full rounded-xl bg-black text-white mt-8">Log In</button>
+                    <a href="{% url 'signup' %}" class="m-4 mb-6 text-sm text-center text-blue-600 hover:text-blue-400">new here? get started</a>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+        const toggleForms = () => {
+            document.getElementById('log-in-title').classList.toggle('text-gray-500')
+            document.getElementById('sign-up-title').classList.toggle('text-gray-500')
+
+            document.getElementById('log-in-form').classList.toggle('hidden')
+            document.getElementById('sign-up-form').classList.toggle('hidden')
+        }
+
+        if(window.location.pathname === "/login/") {
+            toggleForms();
+        }
+    </script>
+        <div class="flex flex-1 items-center justify-center">
+            <img src="{% static "img/sign-up.png" %}" alt="sign-up-image" />
+        </div>
+    </div>
+{% endblock %}
