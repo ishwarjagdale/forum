@@ -1,0 +1,12 @@
+{% extends "forum/layouts/base.html" %}
+
+{% block body %}
+    {% include "forum/components/navigation.html" %}
+    <div class="flex items-start m-2 flex-1">
+        {% include "forum/components/sidebar.html" %}
+        <div class="flex flex-col bg-white p-8 drop-shadow-sm rounded-xl mx-2 flex-1 h-full">
+
+        </div>
+        {% include "forum/components/dashboard-stats.html" %}
+    </div>
+{% endblock body %}

@@ -1,0 +1,80 @@
+<div class="w-[350px]">
+    {% if user.is_authenticated and new_threads %}
+        <div class="bg-white p-6 drop-shadow-sm rounded-xl mb-2">
+            <p class="font-Poppins font-medium text-sm leading-6">
+                {% load tags %}
+                {% if user.last_login %}
+                    {% load humanize %} {% load tags %}
+                    Welcome {{ user.name|get_first_name }}, your last visit was
+                    {{ user.last_login|naturaltime|shorten_natural_time }}. Since
+                    then there were <span class="font-[600] text-blue-400">{{ new_threads|intcomma }} new thread
+                    {% if new_threads|singular %}s{% endif %}</span>
+                    {#                and <span class="font-[600] text-blue-400">502 new posts</span>#}
+                    .
+                {% else %}
+                    Welcome {{ user.name|get_first_name }}!
+                {% endif %}
+            </p>
+        </div>
+    {% endif %}
+
+    {% if stats %}
+        <div class="bg-white p-4 px-8 drop-shadow-sm rounded-xl mb-2">
+            <div class="flex items-center pb-2 mb-2 border-b flex-1">
+                <i class="fas fa-chart-line"></i>
+                <span class="text-sm p-2 font-[600] font-Poppins">Forum Stats</span>
+            </div>
+            <ul class="font-Rubik font-[500] text-sm mb-2">
+                <li class="flex items-center  py-4 border-b justify-between">
+                    <span>Threads</span>
+                    <span class="text-gray-500">{{ stats.total_threads|intcomma }}</span>
+                </li>
+                {#            <li class="flex items-center  py-4 border-b justify-between">#}
+                {#                <span>Messages</span>#}
+                {#                <span class="text-gray-500">{{ 24520|intcomma }}</span>#}
+                {#            </li>#}
+                <li class="flex items-center  py-4 justify-between">
+                    <span>Members</span>
+                    <span class="text-gray-500">{{ stats.total_members|intcomma }}</span>
+                </li>
+            </ul>
+            <a href="/new-thread"
+               class="flex items-center bg-green-100 hover:bg-green-200 rounded-xl text-green-600 font-medium justify-center w-full text-sm font-Poppins p-4">
+                <i class="fas fa-plus"></i>
+                <span class="mx-2">Start new Thread</span>
+            </a>
+        </div>
+    {% endif %}
+
+    {% if populars %}
+        <div class="bg-white p-4 px-8 drop-shadow-sm rounded-xl">
+            <div class="flex items-center pb-2 mb-2 border-b flex-1">
+                <i class="fas fa-fire text-orange-400"></i>
+                <span class="text-sm p-2 font-[600] font-Poppins">Trending Threads</span>
+            </div>
+            <ul class="font-Rubik font-[500] text-sm mb-2">
+                {% for thread in populars %}
+                    <li class="flex flex-col py-4">
+                        <div class="flex items-center mb-2 justify-between">
+                            <a href="/user/{{ thread.author.username }}" class="flex items-center font-Poppins">
+                                <img class="aspect-square w-[24px] rounded-full"
+                                     src="{{ thread.author.profile_url }}"
+                                     alt="author"/>
+                                <span class="text-gray-500 font-medium text-xs mx-2">{{ thread.author.name }}</span>
+                            </a>
+                            <span class="text-gray-500 font-medium text-xs">{{ thread.date_posted|naturaltime|shorten_natural_time }}</span>
+                        </div>
+                        <a href="/thread/{{ thread.thread_id }}"
+                           class="font-[600] text-md font-Poppins">{{ thread.topic }}</a>
+                    </li>
+                    {% if not forloop.last %}
+                        <li class="mb-2 border-b"></li>
+                    {% endif %}
+                    {% empty %}
+                    <li class="py-4 text-xs font-Poppins">No threads yet!</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+</div>

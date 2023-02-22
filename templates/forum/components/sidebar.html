@@ -1,0 +1,58 @@
+{% load static %}
+<div class="bg-white p-8 px-4 w-[350px] drop-shadow-sm rounded-xl">
+    <script type="text/javascript">
+        const addURLParams = (key, value) => {
+            const url = new URL(window.location.href);
+            url.searchParams.set(key, value);
+            window.location.href = url.href;
+        }
+    </script>
+    <ul class="flex flex-col font-Poppins">
+
+        <li>
+            <a class="flex items-center px-4 mb-4"
+               href="{% if user.is_authenticated %}/user/{{ user.username }}{% else %}/sign-up{% endif %}">
+                <img src="
+
+
+                        {% if user.is_authenticated %}{{ user.profile_url }}{% else %}{% static "img/default-user.png" %}{% endif %}"
+                     class="object-cover w-[36px] aspect-square rounded-full" alt="user-img"/>
+                <span class="mx-4 font-[600] font-Poppins text-sm">{% if user.is_authenticated %}
+                    {{ user.name }}{% else %}Anonymous{% endif %}</span>
+            </a>
+        </li>
+        {% if user.is_authenticated %}
+            <li>
+                <a class="flex items-center p-[0.75rem] hover:bg-[#f1f1f1] rounded-xl" href="/">
+                    <i class="far fa-envelope w-[36px] text-center"></i>
+                    <span class="text-sm font-[600]">Inbox</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center p-[0.75rem] hover:bg-[#f1f1f1] rounded-xl" href="/">
+                    <i class="far fa-bell w-[36px] text-center"></i>
+                    <span class=" text-sm font-[600]">Notifications</span>
+                </a>
+            </li>
+            <li class="m-2"></li>
+        {% endif %}
+        {% if threads %}
+            <li class="p-4">
+                <span class="text-gray-500 text-xs font-medium font-Rubik">FORUM FILTERS</span>
+            </li>
+            {% load tags %}
+            {% for tag in tags %}
+                <li>
+                    <button class="cursor-pointer flex items-center p-[0.75rem] hover:bg-[#f1f1f1] rounded-xl"
+                            onclick="addURLParams('filter', '{{ tag }}')">
+                        <span class="flex justify-center w-[36px]">
+                            <i style="border-color: {% random_color %}"
+                               class="border-2 rounded-full w-fit p-[0.4rem] block"></i>
+                        </span>
+                        <span class="text-xs font-[600]">{{ tag }}</span>
+                    </button>
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</div>
