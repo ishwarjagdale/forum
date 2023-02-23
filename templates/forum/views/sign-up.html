@@ -7,9 +7,9 @@
         <div class="flex flex-1 items-center justify-center">
             <div class="flex flex-col p-8 bg-white font-Poppins rounded-xl drop-shadow-sm max-w-[500px] w-full">
                 <div class="flex items-center text-xl font-bold pb-4 my-6 border-b">
-                    <span onclick="toggleForms()" id="sign-up-title" class="block cursor-pointer">SIGN UP</span>
+                    <a href="{% url 'signup' %}" id="sign-up-title" class="block cursor-pointer">SIGN UP</a>
                     <span class="block mx-4">//</span>
-                    <span onclick="toggleForms()" id="log-in-title" class="block cursor-pointer text-gray-500">LOG IN</span>
+                    <a href="{% url 'login' %}" id="log-in-title" class="block cursor-pointer text-gray-500">LOG IN</a>
                 </div>
                 {% if form %}
                     {% for field in form %}
@@ -18,7 +18,8 @@
                         {% endfor %}
                     {% endfor %}
                 {% endif %}
-                <form id="sign-up-form" method="post" class="flex flex-col flex-1">
+                {% if title == "Sign Up" %}
+                    <form id="sign-up-form" method="post" class="flex flex-col flex-1">
                     {% csrf_token %}
                     <label class="my-2 flex text-sm items-center border-b">
                         <i class="fas fa-user -mr-8 z-10 text-xs text-gray-500 block p-2"></i>
@@ -39,7 +40,8 @@
                     <button type="submit" name="submit" class="p-2 text-sm w-full rounded-xl bg-black text-white mt-8">Sign Up</button>
                     <a href="{% url 'login' %}" class="m-4 mb-6 text-sm text-center text-blue-600 hover:text-blue-400">have an account? log in</a>
                 </form>
-                <form id="log-in-form" method="post" class="flex flex-col flex-1 hidden">
+                {% else %}
+                    <form id="log-in-form" method="post" class="flex flex-col flex-1">
                     {% csrf_token %}
                     <label class="my-2 flex text-sm  items-center border-b">
                         <i class="fas fa-envelope -mr-8 z-10 text-xs text-gray-500 block p-2"></i>
@@ -52,21 +54,9 @@
                     <button type="submit" name="submit" class="p-2 text-sm w-full rounded-xl bg-black text-white mt-8">Log In</button>
                     <a href="{% url 'signup' %}" class="m-4 mb-6 text-sm text-center text-blue-600 hover:text-blue-400">new here? get started</a>
                 </form>
+                {% endif %}
             </div>
         </div>
-        <script type="text/javascript">
-        const toggleForms = () => {
-            document.getElementById('log-in-title').classList.toggle('text-gray-500')
-            document.getElementById('sign-up-title').classList.toggle('text-gray-500')
-
-            document.getElementById('log-in-form').classList.toggle('hidden')
-            document.getElementById('sign-up-form').classList.toggle('hidden')
-        }
-
-        if(window.location.pathname === "/login/") {
-            toggleForms();
-        }
-    </script>
         <div class="flex flex-1 items-center justify-center">
             <img src="{% static "img/sign-up.png" %}" alt="sign-up-image" />
         </div>

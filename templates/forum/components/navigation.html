@@ -1,4 +1,4 @@
-<div id="navigation" class="flex items-center w-full h-[100px] p-8 bg-white drop-shadow-sm sticky top-0">
+<div id="navigation" class="flex items-center w-full h-[100px] p-8 bg-white drop-shadow-sm sticky top-0 z-50">
     <a href="/" id="brand-logo" class="flex items-center px-12">
         <i class="fab fa-forumbee mr-2"></i>
         <span class="text-xl font-[500] font-Rubik">FORUM</span>
@@ -20,7 +20,7 @@
             <button class="far fa-bell p-4 hover:bg-[#e4e4e4] rounded-full mr-2"></button>
             <button class="far fa-envelope p-4 hover:bg-[#e4e4e4] rounded-full mr-4"></button>
             <img src="{{ user.profile_url }}" class="object-cover w-[36px] aspect-square rounded-full mr-4" alt="user-img"/>
-            <a href="{% url 'logout' %}" class="fas fa-sign-out text-sm hover:bg-[#e4e4e4] p-4 px-[1.25rem] rounded-full" title="Log out"></a>
+            <a href="{% url 'logout' %}" class="fas fa-sign-out text-sm hover:bg-[#e4e4e4] p-4 rounded-full" title="Log out"></a>
         {% else %}
             <a href="{% url 'signup' %}" class="p-[0.75rem] px-6 hover:bg-[#1f1f1f] hover:text-white rounded-full border-2 border-gray-800 text-xs font-Poppins font-medium">Sign up</a>
         {% endif %}

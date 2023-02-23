@@ -1,12 +1,75 @@
 {% extends "forum/layouts/base.html" %}
 
+{% block head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"/>
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+{% endblock %}
+
 {% block body %}
     {% include "forum/components/navigation.html" %}
     <div class="flex items-start m-2 flex-1 w-full">
         {% include "forum/components/sidebar.html" %}
-        <div class="flex flex-col bg-white p-8 drop-shadow-sm rounded-xl mx-2 flex-1 h-full">
+        <form onsubmit="document.querySelector('textarea[name=tags]').value = document.querySelector('ul[id=tags]').innerText"
+              method="post" action="{% url 'new-thread' %}"
+              class="flex flex-col bg-white p-8 drop-shadow-sm rounded-xl mx-2 flex-1 h-full">
+            {% csrf_token %}
+            <span class="text-xl font-Rubik font-medium pb-8 block">NEW THREAD</span>
+            {% if form %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <span class="text-sm p-2 bg-[#f8f8ff] border-l-4 border-red-400 mb-2"><b
+                                class="font-[600] mr-2">{{ field.label }}:</b> {{ error }}</span>
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+            <label class="flex items-center">
+                <span class="mr-8 font-medium font-Rubik hidden">
+                    TOPIC
+                </span>
+                <input class="py-4 border-b font-Rubik  w-full outline-none focus:border-blue-400" type="text"
+                       name="topic" placeholder="What's on your mind..." required/>
+            </label>
+            <label for="simple-mde-editor" class="mt-4">
+                <textarea name="content" id="simple-mde-editor" minlength="10"></textarea>
+            </label>
+            <script type="text/javascript">
+                const simpleMDE = new SimpleMDE({
+                    element: document.getElementById('simple-mde-editor')
+                });
+                simpleMDE.codemirror.on('change', () => {
+                    document.getElementById('simple-mde-editor').innerText = simpleMDE.value();
+                })
 
-        </div>
+                const newTag = () => {
+                    const container = document.getElementById('tags');
+                    const new_tag = document.createElement("li")
+                    new_tag.className = "flex items-center mb-2 p-4 rounded-full text-xs font-Poppins mx-2 font-medium bg-[#f8f8ff] hover:bg-[#e4e4e4] drop-shadow-sm"
+                    {#new_tag.onclick = (e) => e.target.remove()#}
+                    new_tag.spellcheck = false;
+                    new_tag.onclick = () => new_tag.children[0].focus()
+                    new_tag.innerHTML = "<span class='px-2 outline-none' contenteditable='true'></span><button onclick='this.parentElement.remove()' class='fas px-2 fa-close rounded-full'></button>"
+                    container.append(new_tag);
+                    new_tag.children[0].focus()
+                }
+            </script>
+            <div class="flex items-start mt-4">
+                <div class="flex items-center">
+                    <span class="mr-2 font-medium font-Rubik text-sm">Tags:</span>
+                    <button type="button" onclick='newTag()'
+                            class="transition-all duration-200 ease-in-out p-4 hover:bg-[#e4e4e4] bg-[#f8f8ff] rounded-full text-xs mx-2 fas fa-plus"></button>
+                </div>
+                <label>
+                    <textarea name="tags" hidden></textarea>
+                </label>
+                <ul id="tags" class="flex items-center flex-wrap">
+                </ul>
+            </div>
+            <div class="flex items-center justify-end">
+                <button type="submit" name="submit"
+                        class="p-4 px-6 rounded-xl bg-[#1f1f1f] hover:bg-black text-white font-Poppins text-sm">Post
+                </button>
+            </div>
+        </form>
         {% include "forum/components/dashboard-stats.html" %}
     </div>
 {% endblock body %}

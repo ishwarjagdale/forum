@@ -16,7 +16,7 @@ def singular(a):
 
 
 def shorten_natural_time(string):
-    return str(string.removesuffix('ago').split(",")[0]).strip() + " ago"
+    return str(string[:-len('ago')].split(",")[0]).strip() + " ago"
 
 
 register = template.Library()

@@ -23,8 +23,8 @@
                                  class="rounded-full object-cover w-[36px] aspect-square" alt="img"/>
                             <div class="flex flex-col mx-4">
                                 <a href="/thread/{{ thread.thread_id }}" class="font-Poppins text-[16px] font-[600] mb-1">{{ thread.topic }}</a>
-                                <div class="flex items-center font-Rubik text-xs">
-                                    <a href="/user/{{ thread.author.username }}" class="font-medium mr-4 text-sm">{{ thread.author.name }}</a>
+                                <div class="flex items-center font-Poppins text-xs">
+                                    <a href="/user/{{ thread.author.username }}" class="font-medium mr-4">{{ thread.author.name }}</a>
                                     <span class="font-medium mr-4 text-gray-500">{{ thread.date_posted|naturaltime|shorten_natural_time }}</span>
                                     <span class="font-medium text-gray-500">{{ thread.replies }} replies</span>
 

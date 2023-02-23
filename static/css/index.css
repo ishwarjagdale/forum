@@ -12,3 +12,7 @@ body {
     flex-direction: column;
     align-items: center;
 }
+
+.fas, .fab, .far {
+    line-height: initial;
+}

@@ -1,10 +1,10 @@
 import datetime
 
 from django.contrib.auth import login
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, HttpResponse
 
-from .forms import SignUpForm, LogInForm
-from .models import Users, Thread
+from .forms import SignUpForm, LogInForm, NewThreadForm
+from .models import Users, Thread, ThreadContent
 
 
 def home(request):
@@ -54,6 +54,21 @@ def home(request):
 def new_thread(request):
     context = {'title': 'Home'}
     if request.user.is_authenticated:
+        if request.POST:
+            form = NewThreadForm(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                topic = data.get('topic')
+                content = data.get('content')
+                tags = map(lambda x: x.strip(), data.get('tags').split('\n'))
+
+                _new_thread = Thread.create(topic=topic, author=request.user.username, tags=tags)
+                _new_thread_content = ThreadContent.create(thread_id=_new_thread.thread_id, content=content)
+
+                return redirect('thread-view', _new_thread.thread_id)
+
+            context['form'] = form
+            return render(request, "forum/views/new-thread.html", context=context)
         return render(request, "forum/views/new-thread.html", context=context)
     return redirect(reverse('login') + "?next=/new-thread/", next='new-thread')
 
@@ -112,3 +127,7 @@ def log_in(request):
         context['form'] = form
         return render(request, "forum/views/sign-up.html", context=context)
     return render(request, "forum/views/sign-up.html", context=context)
+
+
+def thread_view(request, thread_id):
+    return HttpResponse("hi")

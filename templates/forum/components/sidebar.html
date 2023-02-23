@@ -40,7 +40,7 @@
             {% load tags %}
             {% for tag in tags %}
                 <li>
-                    <button class="cursor-pointer flex items-center p-[0.75rem] hover:bg-[#f1f1f1] rounded-xl"
+                    <button class="cursor-pointer flex w-full items-center p-[0.75rem] hover:bg-[#f1f1f1] rounded-xl"
                             onclick="addURLParams('filter', '{{ tag }}')">
                         <span class="flex justify-center w-[36px]">
                             <i style="border-color: {% random_color %}"
