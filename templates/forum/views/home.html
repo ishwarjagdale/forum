@@ -4,26 +4,26 @@
 
 {% block body %}
     {% include "forum/components/navigation.html" %}
-    <div class="flex items-start m-2 w-full flex-1">
+    <div class="flex items-start p-2 w-full flex-1">
         {% include "forum/components/sidebar.html" %}
         <div class="flex flex-col bg-white p-8 drop-shadow-sm rounded-xl mx-2 flex-1 h-full">
             <span class="text-xl font-Rubik font-medium pb-8 block">FORUM COMMUNITY</span>
             <table class="w-full">
-                <tr class="flex items-center mb-2 justify-between bg-[#f8f8ff] p-4 font-Rubik text-xs font-medium rounded-xl">
+                <tr class="flex items-center mb-2 sticky top-0 justify-between bg-[#1f1f1f] text-white p-4 font-Rubik text-xs font-medium rounded-xl">
                     <td class="flex-1">TOPIC</td>
-                    <td class="px-8 w-[100px] text-gray-500">REPLIES</td>
-                    <td class="px-8 w-[100px] text-gray-500">VIEWS</td>
+                    <td class="px-8 w-[100px] text-[#f1f1f1]">REPLIES</td>
+                    <td class="px-8 w-[100px] text-[#f1f1f1]">VIEWS</td>
                 </tr>
                 <tbody>
                 {% load tags %}
                 {% for thread in threads %}
-                    <tr class="flex items-center justify-between py-6 p-4 font-Rubik text-sm font-medium">
+                    <tr class="flex items-center justify-between py-6 p-4 font-Poppins text-sm font-medium">
                         <td class="flex flex-1 items-center">
                             <img src="{{ thread.author.profile_url }}"
-                                 class="rounded-full object-cover w-[36px] aspect-square" alt="img"/>
+                                 class="rounded-full object-cover w-[50px] aspect-square" alt="img"/>
                             <div class="flex flex-col mx-4">
-                                <a href="/thread/{{ thread.thread_id }}" class="font-Poppins text-[16px] font-[600] mb-1">{{ thread.topic }}</a>
-                                <div class="flex items-center font-Poppins text-xs">
+                                <a href="/thread/{{ thread.thread_id }}" class="text-[16px] font-[600] mb-1">{{ thread.topic }}</a>
+                                <div class="flex items-center text-xs">
                                     <a href="/user/{{ thread.author.username }}" class="font-medium mr-4">{{ thread.author.name }}</a>
                                     <span class="font-medium mr-4 text-gray-500">{{ thread.date_posted|naturaltime|shorten_natural_time }}</span>
                                     <span class="font-medium text-gray-500">{{ thread.replies }} replies</span>
@@ -32,17 +32,24 @@
                             </div>
                         </td>
                         <td class="px-8 flex flex-col w-[100px]">
-                            <span class="font-bold font-Rubik text-sm">{{ thread.replies|intcomma }}</span>
-                            <span class="font-medium font-Rubik text-[11px] text-gray-500">Replies</span>
+                            <span class="font-bold text-sm">{{ thread.replies|intcomma }}</span>
+                            <span class="font-medium text-[11px] text-gray-500">Replies</span>
                         </td>
                         <td class="px-8 flex flex-col w-[100px]">
-                            <span class="font-bold font-Rubik text-sm">{{ thread.views|intcomma }}</span>
-                            <span class="font-medium font-Rubik text-[11px] text-gray-500">Views</span>
+                            <span class="font-bold text-sm">{{ thread.views|intcomma }}</span>
+                            <span class="font-medium text-[11px] text-gray-500">Views</span>
                         </td>
                     </tr>
-                    {% if not forloop.last %}
-                        <tr class="border-b"></tr>
-                    {% endif %}
+{#                    {% if not forloop.last %}#}
+                        <tr>
+                        <td class="mx-20 items-center flex">
+                            {% load tags %}
+                            {% for i in ""|random_int %}
+                            <div style="background-color: {% random_color %}" class="w-[15px] mr-1 h-[4px] rounded-xl"></div>
+                            {% endfor %}
+                        </td>
+                        </tr>
+{#                    {% endif %}#}
                 {% endfor %}
                 </tbody>
             </table>

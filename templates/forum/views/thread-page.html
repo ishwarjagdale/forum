@@ -1,0 +1,34 @@
+{% extends "forum/layouts/base.html" %}
+{% load humanize %}
+{% load tags %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"/>
+{% endblock %}
+
+{% block body %}
+    {% include "forum/components/navigation.html" %}
+    <div class="flex items-start p-2 w-full flex-1">
+        {% include "forum/components/sidebar.html" %}
+        <div class="flex flex-col bg-white p-12 drop-shadow-sm rounded-xl mx-2 flex-1">
+            <span class="text-3xl font-Roboto pb-2">{{ thread.topic }}</span>
+            <div class="flex items-center pb-4 text-xs font-Poppins border-b">
+                <span class="mr-6">Posted <span class="font-medium ml-1">{{ thread.date_posted|naturaltime }}</span></span>
+                {% if thread.content.last_modified %}<span class="mr-6">Modified on <span class="font-medium ml-1">{{ thread.content.last_modified|naturaltime }}</span></span>{% endif %}
+                <span class="mr-6">Viewed <span class="font-medium ml-1">{{ thread.views|intcomma }} times</span></span>
+            </div>
+            <div id="content" class="font-Roboto py-4">
+                {{ thread.content.content|to_html|safe }}
+            </div>
+            <div id="tags" class="flex items-center flex-wrap">
+                {% for tag in thread.tags %}
+                    <a href="/?filter={{ tag }}" class="flex items-center mb-2 p-4 cursor-pointer rounded-full text-xs font-Poppins mx-2 font-medium bg-[#f8f8ff] hover:bg-[#e4e4e4] drop-shadow-sm">
+                        {{ tag }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="w-[350px]">
+        </div>
+    </div>
+{% endblock %}

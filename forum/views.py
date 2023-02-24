@@ -60,8 +60,8 @@ def new_thread(request):
                 data = form.cleaned_data
                 topic = data.get('topic')
                 content = data.get('content')
-                tags = map(lambda x: x.strip(), data.get('tags').split('\n'))
-
+                tags = filter(lambda x: len(x) > 0, map(lambda x: x.strip(), data.get('tags').split('\n')))
+                print(list(tags))
                 _new_thread = Thread.create(topic=topic, author=request.user.username, tags=tags)
                 _new_thread_content = ThreadContent.create(thread_id=_new_thread.thread_id, content=content)
 
@@ -130,4 +130,13 @@ def log_in(request):
 
 
 def thread_view(request, thread_id):
-    return HttpResponse("hi")
+    try:
+        thread = Thread.objects.get(thread_id=thread_id)
+        content = ThreadContent.objects.get(thread_id=thread.thread_id)
+        thread.__setattr__('content', content)
+        thread.views += 1
+        thread.save()
+    except Thread.DoesNotExist:
+        return HttpResponse("doesn't exist")
+    context = {"title": thread.topic, "thread": thread}
+    return render(request, "forum/views/thread-page.html", context=context)

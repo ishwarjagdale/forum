@@ -1,6 +1,11 @@
 import random
 
+import markdown
 from django import template
+
+
+def to_html(value):
+    return markdown.markdown(value)
 
 
 def get_first_name(name):
@@ -8,7 +13,11 @@ def get_first_name(name):
 
 
 def random_color():
-    return f"rgb({random.randint(0, 255)}, {random.randint(0, 255)}, {random.randint(0, 255)})"
+    return f"rgb({random.randint(50, 255)}, {random.randint(50, 255)}, {random.randint(50, 255)})"
+
+
+def random_int(arg=None):
+    return list(range(random.randint(1, 5)))
 
 
 def singular(a):
@@ -22,5 +31,7 @@ def shorten_natural_time(string):
 register = template.Library()
 register.filter('get_first_name', get_first_name)
 register.simple_tag(random_color, name='random_color')
+register.filter('to_html', to_html)
+register.filter('random_int', random_int)
 register.filter('singular', singular)
 register.filter('shorten_natural_time', shorten_natural_time)

@@ -16,5 +16,5 @@ class LogInForm(forms.Form):
 class NewThreadForm(forms.Form):
     topic = forms.CharField(required=True)
     content = forms.CharField(required=True)
-    tags = forms.CharField(required=True)
+    tags = forms.CharField(required=False)
 

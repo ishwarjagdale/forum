@@ -7,8 +7,8 @@
                     {% load humanize %} {% load tags %}
                     Welcome {{ user.name|get_first_name }}, your last visit was
                     {{ user.last_login|naturaltime|shorten_natural_time }}. Since
-                    then there were <span class="font-[600] text-blue-400">{{ new_threads|intcomma }} new thread
-                    {% if new_threads|singular %}s{% endif %}</span>
+                    then there were <span class="font-[600] text-blue-400">{{ new_threads|intcomma }} new
+                    thread{% if new_threads|singular %}s{% endif %}</span>
                     {#                and <span class="font-[600] text-blue-400">502 new posts</span>#}
                     .
                 {% else %}
