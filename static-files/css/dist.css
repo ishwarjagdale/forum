@@ -1130,10 +1130,6 @@ body {
   font-style: italic;
 }
 
-#content pre, .editor-preview pre {
-  padding: 0.5rem!important;
-}
-
 #content blockquote, .editor-preview blockquote {
   padding: 0.125rem 1.5rem;
   border-left: 4px solid #9ca3af;
@@ -1161,6 +1157,21 @@ body {
   -o-object-fit: cover;
      object-fit: cover;
   padding: 2rem 0;
+}
+
+#content pre, .editor-preview pre {
+  display: block;
+  background: #eeeeee;
+  padding: 0.5rem 1rem!important;
+}
+
+#content pre code, .editor-preview pre code {
+  padding: 0;
+}
+
+#content code, .editor-preview code {
+  padding: 2px 4px;
+  background: #eeeeee;
 }
 
 .editor-toolbar {

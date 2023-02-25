@@ -5,7 +5,7 @@ from django import template
 
 
 def to_html(value):
-    return markdown.markdown(value)
+    return markdown.markdown(value, extensions=['fenced_code'])
 
 
 def get_first_name(name):

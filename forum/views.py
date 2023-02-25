@@ -60,9 +60,10 @@ def new_thread(request):
                 data = form.cleaned_data
                 topic = data.get('topic')
                 content = data.get('content')
-                tags = filter(lambda x: len(x) > 0, map(lambda x: x.strip(), data.get('tags').split('\n')))
-                print(list(tags))
-                _new_thread = Thread.create(topic=topic, author=request.user.username, tags=tags)
+                tags = set(filter(lambda x: len(x) > 0, map(lambda x: x.strip(), data.get('tags').split('\n'))))
+                _new_thread = Thread.create(topic=topic, author=request.user.username)
+                _new_thread.tags = tags
+                _new_thread.save()
                 _new_thread_content = ThreadContent.create(thread_id=_new_thread.thread_id, content=content)
 
                 return redirect('thread-view', _new_thread.thread_id)
