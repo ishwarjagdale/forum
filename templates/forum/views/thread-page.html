@@ -10,22 +10,48 @@
     {% include "forum/components/navigation.html" %}
     <div class="flex items-start p-2 w-full flex-1">
         {% include "forum/components/sidebar.html" %}
-        <div class="flex flex-col bg-white p-12 drop-shadow-sm rounded-xl mx-2 flex-1">
-            <span class="text-3xl font-Roboto pb-2">{{ thread.topic }}</span>
-            <div class="flex items-center pb-4 text-xs font-Poppins border-b">
-                <span class="mr-6">Posted <span class="font-medium ml-1">{{ thread.date_posted|naturaltime }}</span></span>
-                {% if thread.content.last_modified %}<span class="mr-6">Modified on <span class="font-medium ml-1">{{ thread.content.last_modified|naturaltime }}</span></span>{% endif %}
-                <span class="mr-6">Viewed <span class="font-medium ml-1">{{ thread.views|intcomma }} times</span></span>
+        <div class="flex bg-white p-6 drop-shadow-sm rounded-xl mx-2 flex-1">
+            <div class="flex flex-col items-center text-xl p-6">
+                <i class="fas fa-chevron-up text-green-600 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
+                <span class="text-green-600">69</span>
+                <i class="fas fa-chevron-down p-2 hover:bg-[#e4e4e4] rounded-full"></i>
             </div>
-            <div id="content" class="font-Roboto py-4">
-                {{ thread.content.content|to_html|safe }}
-            </div>
-            <div id="tags" class="flex items-center flex-wrap">
-                {% for tag in thread.tags %}
-                    <a href="/?filter={{ tag }}" class="flex items-center mb-2 p-4 cursor-pointer rounded-full text-xs font-Poppins mx-2 font-medium bg-[#f8f8ff] hover:bg-[#e4e4e4] drop-shadow-sm">
-                        {{ tag }}
-                    </a>
-                {% endfor %}
+            <div class="flex flex-col p-6 flex-1">
+                <span class="text-3xl font-Roboto pb-2">{{ thread.topic }}</span>
+                <div class="flex items-center pb-4 text-xs font-Poppins border-b">
+                    <span class="mr-6">Posted <span class="font-medium ml-1">{{ thread.date_posted|naturaltime }}</span></span>
+                    {% if thread.content.last_modified %}<span class="mr-6">Modified on <span
+                            class="font-medium ml-1">{{ thread.content.last_modified|naturaltime }}</span></span>{% endif %}
+                    <span class="mr-6">Viewed <span
+                            class="font-medium ml-1">{{ thread.views|intcomma }} times</span></span>
+                </div>
+                <div id="content" class="font-Roboto py-4">
+                    {{ thread.content.content|to_html|safe }}
+                </div>
+                <div id="tags" class="flex items-center mb-4 flex-wrap">
+                    {% for tag in thread.tags %}
+                        <a href="/?filter={{ tag }}"
+                           class="flex items-center mb-2 p-[0.75rem] px-6 cursor-pointer rounded-full text-xs font-Poppins mx-2 font-medium bg-[#f8f8ff] hover:bg-[#e4e4e4] drop-shadow-sm">
+                            {{ tag }}
+                        </a>
+                    {% endfor %}
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-share-alt mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
+                        <i class="far fa-bookmark mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
+                        <i class="far fa-flag mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
+                    </div>
+                    <div class="flex p-4 bg-[#f0f8ff]">
+                        <a href="/user/{{ thread.author.username }}">
+                            <img src="{{ thread.author.profile_url }}" class="object-cover w-[36px] aspect-square rounded-full mr-4" alt="user-img"/>
+                        </a>
+                        <div class="font-Poppins flex flex-col">
+                            <span class="text-xs text-gray-500">Asked by</span>
+                            <a href="/user/{{ thread.author.username }}" class=" text-sm">{{ thread.author.name }}</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="w-[350px]">

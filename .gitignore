@@ -3,3 +3,4 @@
 /.idea
 /static
 /djangoProject/production-settings.py
+/**/*.html~

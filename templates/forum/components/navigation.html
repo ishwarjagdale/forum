@@ -22,7 +22,7 @@
             <img src="{{ user.profile_url }}" class="object-cover w-[36px] aspect-square rounded-full mr-4" alt="user-img"/>
             <a href="{% url 'logout' %}" class="fas fa-sign-out text-sm hover:bg-[#e4e4e4] p-4 rounded-full" title="Log out"></a>
         {% else %}
-            <a href="{% url 'signup' %}" class="p-[0.75rem] px-6 hover:bg-[#1f1f1f] hover:text-white rounded-full border-2 border-gray-800 text-xs font-Poppins font-medium">Sign up</a>
+            <a href="{% url 'signup' %}" class="p-[0.75rem] px-6 bg-[#1f1f1f] text-white hover:bg-black rounded-xl border-2 border-gray-800 text-xs font-Poppins font-medium">Sign up</a>
         {% endif %}
     </div>
 </div>

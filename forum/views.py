@@ -64,21 +64,25 @@ def new_thread(request, thread_id=None):
                 content = data.get('content')
                 tags = to_tags(data.get('tags'))
 
-                print(thread_id)
                 if thread_id:
                     try:
                         thread = Thread.objects.get(thread_id=thread_id)
                         thread_content = ThreadContent.objects.get(thread_id=thread_id)
+                        thread.__setattr__('content', thread_content)
+                        if thread.is_active:
+                            thread.topic = topic
+                            thread_content.content = content
+                            thread.tags = tags
+                            thread_content.last_modified = datetime.datetime.now()
 
-                        thread.topic = topic
-                        thread_content.content = content
-                        thread.tags = tags
-                        thread_content.last_modified = datetime.datetime.now()
+                            thread.save()
+                            thread_content.save()
 
-                        thread.save()
-                        thread_content.save()
-
-                        return redirect('thread-view', thread.thread_id)
+                            return redirect('thread-view', thread.thread_id)
+                        else:
+                            context['thread'] = thread
+                            context['errors'] = ["This thread has been closed, and no changes can be made in it."]
+                            return render(request, "forum/views/new-thread.html", context=context)
                     except Thread.DoesNotExist:
                         form.add_error('topic', f"No thread exist with id: {thread_id}")
                 else:
@@ -97,10 +101,13 @@ def new_thread(request, thread_id=None):
                 thread_content = ThreadContent.objects.get(thread_id=thread_id)
                 thread.__setattr__('content', thread_content)
                 context['thread'] = thread
+
+                if 'deactivate' in request.GET:
+                    thread.is_active = False
+                    thread.save()
+
             except Thread.DoesNotExist or ThreadContent.DoesNotExist:
-                form = NewThreadForm()
-                form.add_error('topic', f"No thread exist with id: {thread_id}")
-                context['form'] = form
+                context['errors'] = [f"No thread exist with id: {thread_id}"]
         return render(request, "forum/views/new-thread.html", context=context)
     return redirect(reverse('login') + "?next=/new-thread/", next='new-thread')
 
@@ -168,6 +175,9 @@ def thread_view(request, thread_id):
         thread.__setattr__('content', content)
         thread.views += 1
         thread.save()
+
+        author = Users.objects.get(username=thread.author)
+        thread.author = author
     except Thread.DoesNotExist:
         return HttpResponse("doesn't exist")
     context = {"title": thread.topic, "thread": thread}

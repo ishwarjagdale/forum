@@ -7,7 +7,7 @@
 
 {% block body %}
     {% include "forum/components/navigation.html" %}
-    <div class="flex items-start p-2 w-full flex-1">
+    <div class="flex items-start p-2 w-full flex-1 pb-10">
         {% include "forum/components/sidebar.html" %}
         <script type="text/javascript">
             const suppressUnloadEvent = () => {
@@ -18,13 +18,20 @@
                 suppressUnloadEvent();
             }
         </script>
-        <form id="thread-form" onsubmit="processSubmit()"
+        <form id="thread-form"
+              onsubmit="processSubmit()"
               method="post" action="{% if thread %}{% url 'edit-thread' thread.thread_id %}{% else %}{% url 'new-thread' %}{% endif %}"
               class="flex flex-col bg-white p-8 drop-shadow-sm rounded-xl mx-2 flex-1 h-full overflow-x-hidden">
             {% csrf_token %}
             <span class="text-xl font-Rubik font-medium pb-8 block">
                 {{ title }}
             </span>
+            {% if errors %}
+                {% for error in errors %}
+                    <span class="text-sm p-2 bg-[#f8f8ff] border-l-4 border-red-400 mb-2"><b
+                                class="font-[600] mr-2">Error:</b> {{ error }}</span>
+                {% endfor %}
+            {% endif %}
             {% if form %}
                 {% for field in form %}
                     {% for error in field.errors %}
@@ -38,6 +45,7 @@
                     TOPIC
                 </span>
                 <input class="py-4 border-b font-Poppins w-full outline-none focus:border-blue-400" type="text"
+                       {% if not thread.is_active%}disabled{% endif %}
                        name="topic" placeholder="What's on your mind..." value="{% if form %}{{ form.topic.value|default_if_none:'' }}{% else %}{{ thread.topic }}{% endif %}" required/>
             </label>
             <label for="simple-mde-editor" class="mt-4">
@@ -95,7 +103,9 @@
                     new_tag.children[0].focus()
                 }
             </script>
-            <script type="text/javascript">
+            {% if thread %}
+                {% if thread.is_active %}
+                    <script type="text/javascript">
                 window.onbeforeunload = function(){
                     let formData = new FormData(document.getElementById('thread-form'))
                     if(
@@ -107,16 +117,39 @@
                     return 'Are you sure you want to leave?';
                 };
             </script>
+                {% endif %}
+            {% else %}
+                <script type="text/javascript">
+                window.onbeforeunload = function(){
+                    let formData = new FormData(document.getElementById('thread-form'))
+                    if(
+                        formData.get('topic') !== '{{ thread.topic }}' ||
+                        simpleMDE.value() !== String.raw`{{ thread.content.content }}` ||
+                        document.querySelector('ul[id=tags]').innerText.split('\n').map((e) => e.trim()).filter((e) => e.length > 0).join(",") !== '{{ thread.tags|join:"," }}'
+
+                    )
+                    return 'Are you sure you want to leave?';
+                };
+            </script>
+            {% endif %}
             <div class="flex items-center justify-between">
                 {% if thread.is_active %}
-                    <button type="button" name="active"
-                        class="p-4 mt-4 px-6 rounded-xl bg-green-400 hover:bg-black text-white font-Poppins text-sm">
+                    <button onclick="if(window.confirm('This action is permanent, are you sure?'))window.location.href = '{% url "edit-thread" thread.thread_id %}?deactivate'" type="button" name="active"
+                        class="p-4 mt-4 px-6 rounded-xl bg-red-400 hover:bg-red-600 text-white font-Poppins text-sm">
                         Close Thread
                     </button>
                 {% endif %}
-                <button type="submit" name="submit"
-                        class="p-4 mt-4 px-6 rounded-xl bg-[#1f1f1f] hover:bg-black text-white font-Poppins text-sm">Post
-                </button>
+                {% if thread %}
+                    {% if thread.is_active %}
+                        <button type="submit" name="submit"
+                            class="p-4 mt-4 ml-auto px-6 rounded-xl bg-[#1f1f1f] hover:bg-black text-white font-Poppins text-sm">Update
+                    </button>
+                    {% endif %}
+                {% else %}
+                    <button type="submit" name="submit"
+                            class="p-4 mt-4 ml-auto px-6 rounded-xl bg-[#1f1f1f] hover:bg-black text-white font-Poppins text-sm">Post
+                    </button>
+                {% endif %}
             </div>
         </form>
         {% include "forum/components/dashboard-stats.html" %}
