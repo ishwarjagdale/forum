@@ -34,8 +34,13 @@
             <li class="m-2"></li>
         {% endif %}
         {% if threads %}
-            <li class="p-4">
+            <li class="p-4 flex items-center justify-between">
                 <span class="text-gray-500 text-xs font-medium font-Rubik">FORUM FILTERS</span>
+                <a id="reset-filters" href="{% url 'home' %}" class="hidden text-gray-500 fas fa-close p-1 text-sm"></a>
+                <script type="text/javascript">
+                    if(new URL(window.location.href).searchParams.has('filter'))
+                        document.getElementById('reset-filters').classList.remove('hidden');
+                </script>
             </li>
             {% load tags %}
             {% for tag in tags %}
