@@ -7,13 +7,24 @@
 
 {% block body %}
     {% include "forum/components/navigation.html" %}
-    <div class="flex items-start p-2 w-full overflow-x-hidden">
+    <div class="flex items-start p-2 w-full flex-1">
         {% include "forum/components/sidebar.html" %}
-        <form onsubmit="document.querySelector('textarea[name=tags]').value = document.querySelector('ul[id=tags]').innerText"
-              method="post" action="{% url 'new-thread' %}"
+        <script type="text/javascript">
+            const suppressUnloadEvent = () => {
+                window.onbeforeunload = null
+            }
+            const processSubmit = () => {
+                document.querySelector('textarea[name=tags]').value = document.querySelector('ul[id=tags]').innerText
+                suppressUnloadEvent();
+            }
+        </script>
+        <form id="thread-form" onsubmit="processSubmit()"
+              method="post" action="{% if thread %}{% url 'edit-thread' thread.thread_id %}{% else %}{% url 'new-thread' %}{% endif %}"
               class="flex flex-col bg-white p-8 drop-shadow-sm rounded-xl mx-2 flex-1 h-full overflow-x-hidden">
             {% csrf_token %}
-            <span class="text-xl font-Rubik font-medium pb-8 block">NEW THREAD</span>
+            <span class="text-xl font-Rubik font-medium pb-8 block">
+                {{ title }}
+            </span>
             {% if form %}
                 {% for field in form %}
                     {% for error in field.errors %}
@@ -27,14 +38,19 @@
                     TOPIC
                 </span>
                 <input class="py-4 border-b font-Poppins w-full outline-none focus:border-blue-400" type="text"
-                       name="topic" placeholder="What's on your mind..." required/>
+                       name="topic" placeholder="What's on your mind..." value="{% if form %}{{ form.topic.value|default_if_none:'' }}{% else %}{{ thread.topic }}{% endif %}" required/>
             </label>
             <label for="simple-mde-editor" class="mt-4">
-                <textarea name="content" id="simple-mde-editor" minlength="10"></textarea>
+                <textarea name="content" id="simple-mde-editor" minlength="10">{% if form %}{{ form.content.value|default_if_none:'' }}{% else %}{{  thread.content.content }}{% endif %}</textarea>
             </label>
             <script type="text/javascript">
                 const simpleMDE = new SimpleMDE({
-                    element: document.getElementById('simple-mde-editor')
+                    element: document.getElementById('simple-mde-editor'),
+                    placeholder: "Type here...",
+                    showIcons: ["code", "table"],
+                    renderingConfig: {
+                        codeSyntaxHighlighting: true,
+	                },
                 });
                 simpleMDE.codemirror.on('change', () => {
                     document.getElementById('simple-mde-editor').innerText = simpleMDE.value();
@@ -50,6 +66,20 @@
                     <textarea name="tags" hidden></textarea>
                 </label>
                 <ul id="tags" class="flex items-center flex-wrap">
+                    {% if form %}
+                        {% load tags %}
+                        {% for tag in form.tags.value|to_tags %}
+                        <li spellcheck="false" class="flex items-center mb-2 p-4 rounded-full text-xs font-Poppins mx-2 font-medium bg-[#f8f8ff] hover:bg-[#e4e4e4] drop-shadow-sm">
+                            <span class='px-2 outline-none' contenteditable='true'>{{ tag }}</span><button onclick='this.parentElement.remove()' class='fas px-2 fa-close rounded-full'></button>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        {% for tag in thread.tags %}
+                        <li spellcheck="false" class="flex items-center mb-2 p-4 rounded-full text-xs font-Poppins mx-2 font-medium bg-[#f8f8ff] hover:bg-[#e4e4e4] drop-shadow-sm">
+                            <span class='px-2 outline-none' contenteditable='true'>{{ tag }}</span><button onclick='this.parentElement.remove()' class='fas px-2 fa-close rounded-full'></button>
+                        </li>
+                        {% endfor %}
+                    {% endif %}
                 </ul>
             </div>
             <script type="text/javascript">
@@ -64,12 +94,26 @@
                     container.append(new_tag);
                     new_tag.children[0].focus()
                 }
-
+            </script>
+            <script type="text/javascript">
                 window.onbeforeunload = function(){
+                    let formData = new FormData(document.getElementById('thread-form'))
+                    if(
+                        formData.get('topic') !== '{{ thread.topic }}' ||
+                        simpleMDE.value() !== String.raw`{{ thread.content.content }}` ||
+                        document.querySelector('ul[id=tags]').innerText.split('\n').map((e) => e.trim()).filter((e) => e.length > 0).join(",") !== '{{ thread.tags|join:"," }}'
+
+                    )
                     return 'Are you sure you want to leave?';
                 };
             </script>
-            <div class="flex items-center justify-end">
+            <div class="flex items-center justify-between">
+                {% if thread.is_active %}
+                    <button type="button" name="active"
+                        class="p-4 mt-4 px-6 rounded-xl bg-green-400 hover:bg-black text-white font-Poppins text-sm">
+                        Close Thread
+                    </button>
+                {% endif %}
                 <button type="submit" name="submit"
                         class="p-4 mt-4 px-6 rounded-xl bg-[#1f1f1f] hover:bg-black text-white font-Poppins text-sm">Post
                 </button>

@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, reverse, HttpResponse
 
 from .forms import SignUpForm, LogInForm, NewThreadForm
 from .models import Users, Thread, ThreadContent
+from .templatetags.tags import to_tags
 
 
 def home(request):
@@ -51,25 +52,55 @@ def home(request):
     return render(request, "forum/views/home.html", context=context)
 
 
-def new_thread(request):
-    context = {'title': 'Home'}
+def new_thread(request, thread_id=None):
     if request.user.is_authenticated:
+
+        context = {'title': 'Edit Thread' if thread_id else 'New Thread'}
         if request.POST:
             form = NewThreadForm(request.POST)
             if form.is_valid():
                 data = form.cleaned_data
                 topic = data.get('topic')
                 content = data.get('content')
-                tags = set(filter(lambda x: len(x) > 0, map(lambda x: x.strip(), data.get('tags').split('\n'))))
-                _new_thread = Thread.create(topic=topic, author=request.user.username)
-                _new_thread.tags = tags
-                _new_thread.save()
-                _new_thread_content = ThreadContent.create(thread_id=_new_thread.thread_id, content=content)
+                tags = to_tags(data.get('tags'))
 
-                return redirect('thread-view', _new_thread.thread_id)
+                print(thread_id)
+                if thread_id:
+                    try:
+                        thread = Thread.objects.get(thread_id=thread_id)
+                        thread_content = ThreadContent.objects.get(thread_id=thread_id)
+
+                        thread.topic = topic
+                        thread_content.content = content
+                        thread.tags = tags
+                        thread_content.last_modified = datetime.datetime.now()
+
+                        thread.save()
+                        thread_content.save()
+
+                        return redirect('thread-view', thread.thread_id)
+                    except Thread.DoesNotExist:
+                        form.add_error('topic', f"No thread exist with id: {thread_id}")
+                else:
+                    _new_thread = Thread.create(topic=topic, author=request.user.username)
+                    _new_thread.tags = tags
+                    _new_thread.save()
+                    _new_thread_content = ThreadContent.create(thread_id=_new_thread.thread_id, content=content)
+                    return redirect('thread-view', _new_thread.thread_id)
 
             context['form'] = form
             return render(request, "forum/views/new-thread.html", context=context)
+
+        if thread_id:
+            try:
+                thread = Thread.objects.get(thread_id=thread_id)
+                thread_content = ThreadContent.objects.get(thread_id=thread_id)
+                thread.__setattr__('content', thread_content)
+                context['thread'] = thread
+            except Thread.DoesNotExist or ThreadContent.DoesNotExist:
+                form = NewThreadForm()
+                form.add_error('topic', f"No thread exist with id: {thread_id}")
+                context['form'] = form
         return render(request, "forum/views/new-thread.html", context=context)
     return redirect(reverse('login') + "?next=/new-thread/", next='new-thread')
 
