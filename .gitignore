@@ -2,3 +2,4 @@
 /venv
 /.idea
 /static
+/djangoProject/production-settings.py
