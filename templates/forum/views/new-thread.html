@@ -110,7 +110,7 @@
                     let formData = new FormData(document.getElementById('thread-form'))
                     if(
                         formData.get('topic') !== '{{ thread.topic }}' ||
-                        simpleMDE.value() !== String.raw`{{ thread.content.content }}` ||
+                        simpleMDE.value() !== document.getElementById('simple-mde-editor').innerText ||
                         document.querySelector('ul[id=tags]').innerText.split('\n').map((e) => e.trim()).filter((e) => e.length > 0).join(",") !== '{{ thread.tags|join:"," }}'
 
                     )
