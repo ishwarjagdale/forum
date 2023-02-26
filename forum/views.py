@@ -129,15 +129,19 @@ def sign_up(request):
             email = data.get('email')
             password = data.get('password')
             confirm_password = data.get('confirm_password')
-            print(name, email, password, confirm_password)
             if password != confirm_password:
                 form.add_error("confirm_password", "Passwords doesn't match")
             if not form.errors:
-                user = Users.create(name=name, email=email, password=password, authenticated=True, is_active=True)
-                login(request, user)
-                user.last_login = datetime.datetime.now()
-                user.save()
-                return redirect(request.GET.get('next', default='home'))
+                try:
+                    user = Users.objects.get(email=email)
+                    if user:
+                        form.add_error('email', "User already exists!")
+                except Users.DoesNotExist:
+                    user = Users.create(name=name, email=email, password=password, authenticated=True, is_active=True)
+                    login(request, user)
+                    user.last_login = datetime.datetime.now()
+                    user.save()
+                    return redirect(request.GET.get('next', default='home'))
 
         context['form'] = form
         return render(request, "forum/views/sign-up.html", context=context)

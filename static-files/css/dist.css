@@ -567,6 +567,14 @@ video {
   z-index: 50;
 }
 
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
 .m-2 {
   margin: 0.5rem;
 }
@@ -726,8 +734,8 @@ video {
   width: 36px;
 }
 
-.w-\[400px\] {
-  width: 400px;
+.w-\[500px\] {
+  width: 500px;
 }
 
 .w-\[50px\] {
@@ -741,6 +749,14 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-\[400px\] {
+  width: 400px;
+}
+
+.min-w-\[36px\] {
+  min-width: 36px;
 }
 
 .max-w-\[500px\] {
@@ -1028,6 +1044,11 @@ video {
   color: rgb(241 241 241 / var(--tw-text-opacity));
 }
 
+.text-black {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
 .text-blue-400 {
   --tw-text-opacity: 1;
   color: rgb(96 165 250 / var(--tw-text-opacity));
@@ -1053,19 +1074,14 @@ video {
   color: rgb(251 146 60 / var(--tw-text-opacity));
 }
 
-.text-white {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.text-black {
-  --tw-text-opacity: 1;
-  color: rgb(0 0 0 / var(--tw-text-opacity));
-}
-
 .text-red-600 {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity));
+}
+
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
 .outline-none {
@@ -1118,44 +1134,44 @@ body {
   line-height: initial!important;
 }
 
-#content h1, #content h2, #content h3, #content h4, #content h5, #content h6,
+.content h1, .content h2, .content h3, .content h4, .content h5, .content h6,
 .editor-preview h1, .editor-preview h2, .editor-preview h3, .editor-preview h4, .editor-preview h5, .editor-preview h6 {
   display: block;
   margin-block: 1rem;
   font-weight: bold;
 }
 
-#content h1,
+.content h1,
 .editor-preview h1 {
   font-size: 22px;
 }
 
-#content h2,
+.content h2,
 .editor-preview h2 {
   font-size: 20px;
 }
 
-#content h3,
+.content h3,
 .editor-preview h3 {
   font-size: 18px;
 }
 
-#content h4,
+.content h4,
 .editor-preview h4 {
   font-size: 16px;
 }
 
-#content h5,
+.content h5,
 .editor-preview h5 {
   font-size: 14px;
 }
 
-#content h6,
+.content h6,
 .editor-preview h6 {
   font-size: 12px;
 }
 
-#content p,
+.content p,
 .editor-preview p {
   margin-block: 1rem;
   display: block;
@@ -1163,16 +1179,16 @@ body {
   word-spacing: 2px;
 }
 
-#content a, .editor-preview a {
+.content a, .editor-preview a {
   text-decoration: underline;
   color: #216be5;
 }
 
-#content em, .editor-preview em {
+.content em, .editor-preview em {
   font-style: italic;
 }
 
-#content blockquote, .editor-preview blockquote {
+.content blockquote, .editor-preview blockquote {
   padding: 0.125rem 1.5rem;
   border-left: 4px solid #9ca3af;
   background: ghostwhite;
@@ -1181,37 +1197,37 @@ body {
   display: block;
 }
 
-#content ul, .editor-preview ul, #content ol, .editor-preview ol {
+.content ul, .editor-preview ul, .content ol, .editor-preview ol {
   margin: revert!important;
   padding: revert!important;
 }
 
-#content ul, .editor-preview ul {
+.content ul, .editor-preview ul {
   list-style: disc!important;
 }
 
-#content ol, .editor-preview ol {
+.content ol, .editor-preview ol {
   list-style: decimal!important;
 }
 
-#content img, .editor-preview img {
+.content img, .editor-preview img {
   width: 100%;
   -o-object-fit: cover;
      object-fit: cover;
   padding: 2rem 0;
 }
 
-#content pre, .editor-preview pre {
+.content pre, .editor-preview pre {
   display: block;
   background: #eeeeee;
   padding: 0.5rem 1rem!important;
 }
 
-#content pre code, .editor-preview pre code {
+.content pre code, .editor-preview pre code {
   padding: 0;
 }
 
-#content code, .editor-preview code {
+.content code, .editor-preview code {
   padding: 2px 4px;
   background: #eeeeee;
 }
@@ -1261,6 +1277,10 @@ body {
   }
 }
 
+.comment p {
+  display: inline;
+}
+
 .hover\:bg-\[\#e4e4e4\]:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(228 228 228 / var(--tw-bg-opacity));
@@ -1305,6 +1325,3 @@ body {
   --tw-bg-opacity: 1;
   background-color: rgb(248 248 255 / var(--tw-bg-opacity));
 }
-
-
-
