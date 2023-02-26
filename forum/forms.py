@@ -18,3 +18,6 @@ class NewThreadForm(forms.Form):
     content = forms.CharField(required=True)
     tags = forms.CharField(required=False)
 
+
+class NewCommentForm(forms.Form):
+    comment = forms.CharField(required=True, min_length=0, max_length=500)

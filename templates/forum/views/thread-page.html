@@ -10,10 +10,10 @@
     {% include "forum/components/navigation.html" %}
     <div class="flex items-start p-2 w-full flex-1">
         {% include "forum/components/sidebar.html" %}
-        <div class="flex bg-white p-6 drop-shadow-sm rounded-xl mx-2 flex-1">
-            <div class="flex flex-col items-center text-xl p-6">
+        <div class="flex bg-white p-4 drop-shadow-sm rounded-xl mx-2 flex-1">
+            <div class="flex flex-col items-center text-xl p-6 pr-0">
                 <i class="fas fa-chevron-up text-green-600 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
-                <span class="text-green-600">69</span>
+                <span class="{% if thread.votes > 0 %}text-green-600{% endif %}">{{ thread.votes }}</span>
                 <i class="fas fa-chevron-down p-2 hover:bg-[#e4e4e4] rounded-full"></i>
             </div>
             <div class="flex flex-col p-6 flex-1">
@@ -59,7 +59,8 @@
             <div class="bg-white p-6 drop-shadow-sm rounded-xl mb-2">
                 <span class="text-md font-Rubik font-medium pb-2 block">Comments ({{ comments|length }})</span>
                 {% if user.is_authenticated %}
-                    <form id="comment" class="text-sm">
+                    <form id="comment" method="post" action="{% url 'thread-view' thread.thread_id %}" class="text-sm">
+                        {% csrf_token %}
                         <label>
                             <textarea class="bg-[#f8f8ff] p-4 resize-vertical rounded-xl w-full outline-none h-fit" name="comment" type="text" placeholder="New Comment"
                                    minlength="0" maxlength="1000"></textarea>
@@ -72,26 +73,17 @@
                     </p>
                 {% endif %}
                 <ul class="flex flex-col flex-1 mt-4">
-                    <li class="flex items-start flex-1">
-                        <div class="font-Rubik flex text-sm flex-col">
-                            <p class="text-gray-500 mb-4">
-                          No, Chris is trying to point out why having blank=True without having null=True would cause problems in a DateTimeField.
-                                <span class="mx-2">-</span>
-                                <a class="text-blue-600 whitespace-nowrap " href="/user/{{ thread.author.username }}">{{ thread.author.name }}</a>
-                                <span class="mx-2">{{ thread.date_posted }}</span>
-                            </p>
-                            <p class="text-gray-500 mb-4">
-                          No, Chris is trying to point out why having blank=True without having null=True would cause problems in a DateTimeField.
-                                <span class="mx-2">-</span>
-                                <a class="text-blue-600 whitespace-nowrap " href="/user/{{ thread.author.username }}">{{ thread.author.name }}</a>
-                                <span class="mx-2">{{ thread.date_posted }}</span>
-                            </p>
-                        </div>
-                    </li>
+                    {% for comment in comments %}
+                        <li class="flex font-Rubik text-sm flex-1">
+                            <p class="mb-4">
+                                {{ comment.comment }}
+                            <span class="mx-1">-</span>
+                            <a class="text-blue-600 whitespace-nowrap " href="/user/{{ comment.author.username }}">{{ comment.author.name }}</a>
+                            <span class="text-gray-500 mx-2">{{ comment.date_posted }}</span>
+                        </p>
+                        </li>
+                    {% endfor %}
                 </ul>
-                {% for comment in comments %}
-
-                {% endfor %}
             </div>
         </div>
     </div>

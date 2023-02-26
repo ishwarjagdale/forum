@@ -3,8 +3,8 @@ import datetime
 from django.contrib.auth import login
 from django.shortcuts import render, redirect, reverse, HttpResponse
 
-from .forms import SignUpForm, LogInForm, NewThreadForm
-from .models import Users, Thread, ThreadContent
+from .forms import SignUpForm, LogInForm, NewThreadForm, NewCommentForm
+from .models import Users, Thread, ThreadContent, Comments
 from .templatetags.tags import to_tags
 
 
@@ -172,6 +172,7 @@ def log_in(request):
 
 
 def thread_view(request, thread_id):
+    context = {}
     try:
         thread = Thread.objects.get(thread_id=thread_id)
         content = ThreadContent.objects.get(thread_id=thread.thread_id)
@@ -181,7 +182,23 @@ def thread_view(request, thread_id):
 
         author = Users.objects.get(username=thread.author)
         thread.author = author
+
+        if request.POST and request.user.is_authenticated:
+            form = NewCommentForm(request.POST)
+            if form.is_valid():
+                comment = form.cleaned_data.get('comment')
+                print(comment)
+                Comments.create(thread_id=thread.thread_id, author=request.user.username,
+                                comment=comment)
+        comments = Comments.objects.filter(thread_id=thread.thread_id).limit(10)
+        comments = map(lambda x: {
+            "comment": x.comment,
+            "author": Users.objects.get(username=x.author),
+            "date_posted": x.date_posted
+        }, comments)
+        context['comments'] = list(comments)
+
     except Thread.DoesNotExist:
         return HttpResponse("doesn't exist")
-    context = {"title": thread.topic, "thread": thread}
+    context.update({"title": thread.topic, "thread": thread})
     return render(request, "forum/views/thread-page.html", context=context)

@@ -43,10 +43,25 @@ class Thread(DjangoCassandraModel):
 
     views = columns.Integer(required=True, default=0)
     replies = columns.Integer(required=True, default=0)
+    votes = columns.Integer(required=True, default=0)
 
     tags = columns.Set(columns.Text, strict=True)
 
     is_active = columns.Boolean(required=True, default=True)
+
+
+class Comments(DjangoCassandraModel):
+    __table_name__ = "comments"
+    __keyspace__ = "forumKeySpace"
+
+    comment_id = columns.UUID(primary_key=True, default=uuid.uuid4)
+
+    comment = columns.Text(min_length=0, required=True, max_length=500)
+    thread_id = columns.UUID(required=True)
+    author = columns.UUID(required=True)
+
+    date_posted = columns.Date(required=True, default=datetime.datetime.now)
+    reply_to = columns.UUID(required=False)
 
 
 class ThreadContent(DjangoCassandraModel):
