@@ -14,7 +14,9 @@
     <div class="ml-auto flex items-center font-Poppins">
         <form id="search" class="bg-[#f8f8ff] p-4 text-sm rounded-xl mr-4">
             <i class="fas fa-magnifying-glass mx-2 mr-4"></i>
-            <input class="bg-transparent outline-none" name="search" type="search" placeholder="Search..." minlength="0"/>
+            <label>
+                <input class="bg-transparent outline-none" name="search" type="search" placeholder="Search..." minlength="0"/>
+            </label>
         </form>
         {% if user.is_authenticated %}
             <button class="far fa-bell p-4 hover:bg-[#e4e4e4] rounded-full mr-2"></button>
@@ -22,7 +24,7 @@
             <img src="{{ user.profile_url }}" class="object-cover w-[36px] aspect-square rounded-full mr-4" alt="user-img"/>
             <a href="{% url 'logout' %}" class="fas fa-sign-out text-sm hover:bg-[#e4e4e4] p-4 rounded-full" title="Log out"></a>
         {% else %}
-            <a href="{% url 'signup' %}" class="p-[0.75rem] px-6 bg-[#1f1f1f] text-white hover:bg-black rounded-xl border-2 border-gray-800 text-xs font-Poppins font-medium">Sign up</a>
+            <a href="{% url 'login' %}" class="p-[0.75rem] px-6 bg-[#1f1f1f] text-white hover:bg-black rounded-xl border-2 border-gray-800 text-xs font-Poppins font-medium">Log in</a>
         {% endif %}
     </div>
 </div>

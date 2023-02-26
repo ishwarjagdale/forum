@@ -44,7 +44,8 @@
                     </div>
                     <div class="flex p-4 bg-[#f0f8ff]">
                         <a href="/user/{{ thread.author.username }}">
-                            <img src="{{ thread.author.profile_url }}" class="object-cover w-[36px] aspect-square rounded-full mr-4" alt="user-img"/>
+                            <img src="{{ thread.author.profile_url }}"
+                                 class="object-cover w-[36px] aspect-square rounded-full mr-4" alt="user-img"/>
                         </a>
                         <div class="font-Poppins flex flex-col">
                             <span class="text-xs text-gray-500">Asked by</span>
@@ -54,7 +55,44 @@
                 </div>
             </div>
         </div>
-        <div class="w-[350px]">
+        <div class="w-[400px]">
+            <div class="bg-white p-6 drop-shadow-sm rounded-xl mb-2">
+                <span class="text-md font-Rubik font-medium pb-2 block">Comments ({{ comments|length }})</span>
+                {% if user.is_authenticated %}
+                    <form id="comment" class="text-sm">
+                        <label>
+                            <textarea class="bg-[#f8f8ff] p-4 resize-vertical rounded-xl w-full outline-none h-fit" name="comment" type="text" placeholder="New Comment"
+                                   minlength="0" maxlength="1000"></textarea>
+                        </label>
+                        <button class="p-2 px-6 bg-[#2a2a2a] rounded-xl text-white my-2 w-full">Comment</button>
+                    </form>
+                {% else %}
+                    <p class="font-Poppins font-medium text-sm leading-6">
+                        Log in to comment
+                    </p>
+                {% endif %}
+                <ul class="flex flex-col flex-1 mt-4">
+                    <li class="flex items-start flex-1">
+                        <div class="font-Rubik flex text-sm flex-col">
+                            <p class="text-gray-500 mb-4">
+                          No, Chris is trying to point out why having blank=True without having null=True would cause problems in a DateTimeField.
+                                <span class="mx-2">-</span>
+                                <a class="text-blue-600 whitespace-nowrap " href="/user/{{ thread.author.username }}">{{ thread.author.name }}</a>
+                                <span class="mx-2">{{ thread.date_posted }}</span>
+                            </p>
+                            <p class="text-gray-500 mb-4">
+                          No, Chris is trying to point out why having blank=True without having null=True would cause problems in a DateTimeField.
+                                <span class="mx-2">-</span>
+                                <a class="text-blue-600 whitespace-nowrap " href="/user/{{ thread.author.username }}">{{ thread.author.name }}</a>
+                                <span class="mx-2">{{ thread.date_posted }}</span>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+                {% for comment in comments %}
+
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

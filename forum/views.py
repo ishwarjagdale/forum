@@ -98,14 +98,17 @@ def new_thread(request, thread_id=None):
         if thread_id:
             try:
                 thread = Thread.objects.get(thread_id=thread_id)
-                thread_content = ThreadContent.objects.get(thread_id=thread_id)
-                thread.__setattr__('content', thread_content)
-                context['thread'] = thread
+                if request.user.username == thread.author:
+                    thread_content = ThreadContent.objects.get(thread_id=thread_id)
+                    thread.__setattr__('content', thread_content)
+                    context['thread'] = thread
 
-                if 'deactivate' in request.GET:
-                    thread.is_active = False
-                    thread.save()
-
+                    if 'deactivate' in request.GET:
+                        thread.is_active = False
+                        thread.save()
+                else:
+                    context['errors'] = [f"Unauthorized access, thread with id: {thread_id} doesn't belong to you"]
+                    context['title'] = "New Thread"
             except Thread.DoesNotExist or ThreadContent.DoesNotExist:
                 context['errors'] = [f"No thread exist with id: {thread_id}"]
         return render(request, "forum/views/new-thread.html", context=context)

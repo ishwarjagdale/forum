@@ -45,7 +45,7 @@
                     TOPIC
                 </span>
                 <input class="py-4 border-b font-Poppins w-full outline-none focus:border-blue-400" type="text"
-                       {% if not thread.is_active%}disabled{% endif %}
+                       {% if thread %}{% if not thread.is_active %}disabled{% endif %}{% endif %}
                        name="topic" placeholder="What's on your mind..." value="{% if form %}{{ form.topic.value|default_if_none:'' }}{% else %}{{ thread.topic }}{% endif %}" required/>
             </label>
             <label for="simple-mde-editor" class="mt-4">
