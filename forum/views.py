@@ -4,7 +4,7 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect, reverse, HttpResponse
 
 from .forms import SignUpForm, LogInForm, NewThreadForm, NewCommentForm
-from .models import Users, Thread, ThreadContent, Comments
+from .models import Users, Thread, ThreadContent, Comments, ThreadVotes
 from .templatetags.tags import to_tags
 
 
@@ -180,8 +180,33 @@ def thread_view(request, thread_id):
         thread.views += 1
         thread.save()
 
-        author = Users.objects.get(username=thread.author)
-        thread.author = author
+        if request.user.is_authenticated:
+            try:
+                thread_vote = ThreadVotes.objects.get(thread_id=thread.thread_id)
+            except ThreadVotes.DoesNotExist:
+                thread_vote = ThreadVotes.create(thread_id=thread.thread_id, ups=set(), downs=set())
+
+            if "vote" in request.GET:
+                vote = request.GET.get('vote')
+                if vote in ["up", "down"]:
+                    if vote == "up":
+                        thread_vote.ups.add(request.user.username)
+                        thread_vote.downs.discard(request.user.username)
+                    else:
+                        thread_vote.ups.discard(request.user.username)
+                        thread_vote.downs.add(request.user.username)
+                    thread_vote.save()
+                    thread.votes = len(thread_vote.ups) - len(thread_vote.downs)
+                    thread.save()
+
+            if request.user.username in thread_vote.ups:
+                context['user_vote'] = 1
+            elif request.user.username in thread_vote.downs:
+                context['user_vote'] = -1
+            else:
+                context['user_vote'] = 0
+
+        thread.author = Users.objects.get(username=thread.author)
 
         if request.POST and request.user.is_authenticated:
             form = NewCommentForm(request.POST)
@@ -192,6 +217,7 @@ def thread_view(request, thread_id):
                                 comment=comment)
         comments = Comments.objects.filter(thread_id=thread.thread_id).limit(10)
         comments = map(lambda x: {
+            "comment_id": x.comment_id,
             "comment": x.comment,
             "author": Users.objects.get(username=x.author),
             "date_posted": x.date_posted

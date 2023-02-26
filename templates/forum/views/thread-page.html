@@ -11,11 +11,11 @@
     <div class="flex items-start p-2 w-full flex-1">
         {% include "forum/components/sidebar.html" %}
         <div class="flex bg-white p-4 drop-shadow-sm rounded-xl mx-2 flex-1">
-            <div class="flex flex-col items-center text-xl p-6 pr-0">
-                <i class="fas fa-chevron-up text-green-600 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
-                <span class="{% if thread.votes > 0 %}text-green-600{% endif %}">{{ thread.votes }}</span>
-                <i class="fas fa-chevron-down p-2 hover:bg-[#e4e4e4] rounded-full"></i>
-            </div>
+            <form class="flex flex-col items-center text-xl p-6 pr-0">
+                <button name="vote" value="up" type="submit" {% if user_vote > 0 %}disabled{% endif %} class="fas fa-chevron-up {% if user_vote > 0 %}text-green-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
+                <span class="{% if user_vote > 0 %}text-green-600{% elif user_vote == 0 %}text-black{% else %}text-red-600{% endif %}">{{ thread.votes }}</span>
+                <button name="vote" value="down" type="submit" {% if user_vote < 0 %}disabled{% endif %} class="fas fa-chevron-down {% if user_vote < 0 %}text-red-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
+            </form>
             <div class="flex flex-col p-6 flex-1">
                 <span class="text-3xl font-Roboto pb-2">{{ thread.topic }}</span>
                 <div class="flex items-center pb-4 text-xs font-Poppins border-b">
@@ -74,13 +74,13 @@
                 {% endif %}
                 <ul class="flex flex-col flex-1 mt-4">
                     {% for comment in comments %}
-                        <li class="flex font-Rubik text-sm flex-1">
-                            <p class="mb-4">
+                        <li id="{{ comment.comment_id }}" class="flex font-Rubik text-sm flex-1 mb-4">
+                            <p>
                                 {{ comment.comment }}
-                            <span class="mx-1">-</span>
-                            <a class="text-blue-600 whitespace-nowrap " href="/user/{{ comment.author.username }}">{{ comment.author.name }}</a>
-                            <span class="text-gray-500 mx-2">{{ comment.date_posted }}</span>
-                        </p>
+                                <span class="mx-1">-</span>
+                                <a class="text-blue-600 whitespace-nowrap " href="/user/{{ comment.author.username }}">{{ comment.author.name }}</a>
+                                <span class="text-gray-500 mx-2">{{ comment.date_posted }}</span>
+                            </p>
                         </li>
                     {% endfor %}
                 </ul>
