@@ -94,7 +94,7 @@
                     </div>
                 </div>
             {% endfor %}
-            {% if thread.is_active %}
+            {% if thread.is_active and user.is_authenticated %}
                 <form id="edit-answer" method="post" action="{% url 'new_answer' thread.thread_id %}" class="flex flex-col bg-white p-6 drop-shadow-sm rounded-xl mx-2 mb-2 flex-1">
                 {% csrf_token %}
                 <span class="text-xl font-Rubik font-medium p-4 block">
@@ -136,6 +136,12 @@
                     Post Your Answer
                 </button>
             </form>
+            {% else %}
+                <div class="flex flex-col bg-white p-6 drop-shadow-sm rounded-xl mx-2 mb-2 flex-1">
+                    <p class="font-Poppins font-medium px-2 text-sm leading-6">
+                        Log in to answer
+                    </p>
+                </div>
             {% endif %}
         </div>
         <div class="w-[480px]">
