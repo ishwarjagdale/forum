@@ -18,7 +18,7 @@
                     {% csrf_token %}
                     <button name="vote" value="up" type="submit" {% if user_vote > 0 %}disabled{% endif %}
                             class="fas fa-chevron-up {% if user_vote > 0 %}text-green-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
-                    <span class="{% if user_vote > 0 %}text-green-600{% elif user_vote == 0 %}text-black{% else %}text-red-600{% endif %}">{{ thread.votes }}</span>
+                    <span class="{% if user_vote > 0 %}text-green-600{% elif user_vote < 0 %}text-red-600{% else %}text-black{% endif %}">{{ thread.votes }}</span>
                     <button name="vote" value="down" type="submit" {% if user_vote < 0 %}disabled{% endif %}
                             class="fas fa-chevron-down {% if user_vote < 0 %}text-red-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
                 </form>
@@ -70,7 +70,7 @@
                         {% csrf_token %}
                         <button name="vote" value="up" type="submit" {% if answer.user_vote > 0 %}disabled{% endif %}
                                 class="fas fa-chevron-up {% if answer.user_vote > 0 %}text-green-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
-                        <span class="{% if answer.user_vote > 0 %}text-green-600{% elif answer.user_vote == 0 %}text-black{% else %}text-red-600{% endif %}">{{ answer.votes }}</span>
+                        <span class="{% if answer.user_vote > 0 %}text-green-600{% elif answer.user_vote < 0 %}text-red-600{% else %}text-black{% endif %}">{{ answer.votes }}</span>
                         <button name="vote" value="down" type="submit" {% if answer.user_vote < 0 %}disabled{% endif %}
                                 class="fas fa-chevron-down {% if answer.user_vote < 0 %}text-red-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
                     </form>
