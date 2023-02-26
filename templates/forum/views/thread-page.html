@@ -4,66 +4,157 @@
 
 {% block head %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"/>
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 {% endblock %}
 
 {% block body %}
     {% include "forum/components/navigation.html" %}
     <div class="flex items-start p-2 w-full flex-1">
         {% include "forum/components/sidebar.html" %}
-        <div class="flex bg-white p-4 drop-shadow-sm rounded-xl mx-2 flex-1">
-            <form class="flex flex-col items-center text-xl p-6 pr-0">
-                <button name="vote" value="up" type="submit" {% if user_vote > 0 %}disabled{% endif %} class="fas fa-chevron-up {% if user_vote > 0 %}text-green-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
-                <span class="{% if user_vote > 0 %}text-green-600{% elif user_vote == 0 %}text-black{% else %}text-red-600{% endif %}">{{ thread.votes }}</span>
-                <button name="vote" value="down" type="submit" {% if user_vote < 0 %}disabled{% endif %} class="fas fa-chevron-down {% if user_vote < 0 %}text-red-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
-            </form>
-            <div class="flex flex-col p-6 flex-1">
-                <span class="text-3xl font-Roboto pb-2">{{ thread.topic }}</span>
-                <div class="flex items-center pb-4 text-xs font-Poppins border-b">
-                    <span class="mr-6">Posted <span class="font-medium ml-1">{{ thread.date_posted|naturaltime }}</span></span>
-                    {% if thread.content.last_modified %}<span class="mr-6">Modified on <span
-                            class="font-medium ml-1">{{ thread.content.last_modified|naturaltime }}</span></span>{% endif %}
-                    <span class="mr-6">Viewed <span
-                            class="font-medium ml-1">{{ thread.views|intcomma }} times</span></span>
-                </div>
-                <div id="content" class="font-Roboto py-4">
-                    {{ thread.content.content|to_html|safe }}
-                </div>
-                <div id="tags" class="flex items-center mb-4 flex-wrap">
-                    {% for tag in thread.tags %}
-                        <a href="/?filter={{ tag }}"
-                           class="flex items-center mb-2 p-[0.75rem] px-6 cursor-pointer rounded-full text-xs font-Poppins mx-2 font-medium bg-[#f8f8ff] hover:bg-[#e4e4e4] drop-shadow-sm">
-                            {{ tag }}
-                        </a>
-                    {% endfor %}
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="fas fa-share-alt mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
-                        <i class="far fa-bookmark mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
-                        <i class="far fa-flag mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
+        <div class="flex flex-col flex-1">
+            <div class="flex bg-white p-4 drop-shadow-sm rounded-xl mx-2 mb-2 flex-1">
+                <form action="{% url 'vote-thread' thread.thread_id %}" method="post"
+                      class="flex flex-col items-center text-xl p-6 pr-0">
+                    {% csrf_token %}
+                    <button name="vote" value="up" type="submit" {% if user_vote > 0 %}disabled{% endif %}
+                            class="fas fa-chevron-up {% if user_vote > 0 %}text-green-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
+                    <span class="{% if user_vote > 0 %}text-green-600{% elif user_vote == 0 %}text-black{% else %}text-red-600{% endif %}">{{ thread.votes }}</span>
+                    <button name="vote" value="down" type="submit" {% if user_vote < 0 %}disabled{% endif %}
+                            class="fas fa-chevron-down {% if user_vote < 0 %}text-red-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
+                </form>
+                <div class="flex flex-col p-6 flex-1">
+                    <span class="text-3xl font-Roboto pb-2">{{ thread.topic }}</span>
+                    <div class="flex items-center pb-4 text-xs font-Poppins border-b">
+                        <span class="mr-6">Posted <span
+                                class="font-medium ml-1">{{ thread.date_posted|naturaltime }}</span></span>
+                        {% if thread.content.last_modified %}<span class="mr-6">Modified on <span
+                                class="font-medium ml-1">{{ thread.content.last_modified|naturaltime }}</span></span>{% endif %}
+                        <span class="mr-6">Viewed <span
+                                class="font-medium ml-1">{{ thread.views|intcomma }} times</span></span>
                     </div>
-                    <div class="flex p-4 bg-[#f0f8ff]">
-                        <a href="/user/{{ thread.author.username }}">
-                            <img src="{{ thread.author.profile_url }}"
-                                 class="object-cover w-[36px] aspect-square rounded-full mr-4" alt="user-img"/>
-                        </a>
-                        <div class="font-Poppins flex flex-col">
-                            <span class="text-xs text-gray-500">Asked by</span>
-                            <a href="/user/{{ thread.author.username }}" class=" text-sm">{{ thread.author.name }}</a>
+                    <div class="content" class="font-Roboto py-4">
+                        {{ thread.content.content|to_html|safe }}
+                    </div>
+                    <div id="tags" class="flex items-center mb-4 flex-wrap">
+                        {% for tag in thread.tags %}
+                            <a href="/?filter={{ tag }}"
+                               class="flex items-center mb-2 p-[0.75rem] px-6 cursor-pointer rounded-full text-xs font-Poppins mx-2 font-medium bg-[#f8f8ff] hover:bg-[#e4e4e4] drop-shadow-sm">
+                                {{ tag }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex text-sm items-center">
+                            <i onclick="window.navigator.clipboard.writeText(`${window.location.href}`).then(() => window.alert('Link copied to clipboard'))" class="fas fa-share-alt mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
+                            {% if user.is_authenticated and user.username == thread.author.username %}<a href="{% url 'edit-thread' thread.thread_id %}" class="fas fa-pencil mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></a>{% endif %}
+                            <i class="far fa-flag mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
+                        </div>
+                        <div class="flex p-4 bg-[#f0f8ff]">
+                            <a href="/user/{{ thread.author.username }}">
+                                <img src="{{ thread.author.profile_url }}"
+                                     class="object-cover w-[36px] aspect-square rounded-full mr-4" alt="user-img"/>
+                            </a>
+                            <div class="font-Poppins flex flex-col">
+                                <span class="text-xs text-gray-500">Asked by</span>
+                                <a href="/user/{{ thread.author.username }}"
+                                   class=" text-sm">{{ thread.author.name }}</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {% for answer in answers %}
+                <div id="{{ answer.answer_id }}" class="flex bg-white p-4 drop-shadow-sm rounded-xl mx-2 mb-2 flex-1">
+                    <form action="{% url 'vote-thread' answer.answer_id %}" method="post"
+                          class="flex flex-col items-center text-xl p-6 pr-0">
+                        {% csrf_token %}
+                        <button name="vote" value="up" type="submit" {% if answer.user_vote > 0 %}disabled{% endif %}
+                                class="fas fa-chevron-up {% if answer.user_vote > 0 %}text-green-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
+                        <span class="{% if answer.user_vote > 0 %}text-green-600{% elif answer.user_vote == 0 %}text-black{% else %}text-red-600{% endif %}">{{ answer.votes }}</span>
+                        <button name="vote" value="down" type="submit" {% if answer.user_vote < 0 %}disabled{% endif %}
+                                class="fas fa-chevron-down {% if answer.user_vote < 0 %}text-red-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
+                    </form>
+                    <div class="flex flex-col p-6 flex-1">
+                        <div class="flex items-center pb-4 font-Poppins border-b">
+                            <span class="mr-6 text-xs">Answered <span
+                                    class="font-medium ml-1">{{ answer.date_posted|naturaltime }}</span></span>
+                            {% if answer.content.last_modified %}<span class="text-xs mr-6">Modified on <span
+                                    class="font-medium ml-1">{{ answer.content.last_modified|naturaltime }}</span></span>{% endif %}
+                            <span class="mr-6 text-xs">Answered by <a href="/user/{{ answer.author.username }}"
+                                                                      class="font-medium ml-1">{{ answer.author.name }}</a></span>
+                            <div class="ml-auto text-sm flex items-center">
+                                <i onclick="window.navigator.clipboard.writeText(`${window.location.href}#{{ answer.answer_id }}`).then(() => window.alert('Link copied to clipboard'))" class="fas fa-share-alt mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
+                                {% if user.is_authenticated and user.username == answer.author.username %}<a onclick="document.getElementById('simple-mde-editor').innerText = '{{ answer.content.content|safe }}'" href="#edit-answer" class="fas fa-pencil mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></a>{% endif %}
+                                <i class="far fa-flag mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
+                            </div>
+                        </div>
+                        <div class="content" class="font-Roboto py-4">
+                            {{ answer.content.content|to_html|safe }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if thread.is_active %}
+                <form id="edit-answer" method="post" action="{% url 'new_answer' thread.thread_id %}" class="flex flex-col bg-white p-6 drop-shadow-sm rounded-xl mx-2 mb-2 flex-1">
+                {% csrf_token %}
+                <span class="text-xl font-Rubik font-medium p-4 block">
+                    Your Answer
+                </span>
+                {% if errors %}
+                    {% for error in errors %}
+                        <span class="text-sm p-2 bg-[#f8f8ff] border-l-4 border-red-400 mb-2"><b
+                                class="font-[600] mr-2">Error:</b> {{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                {% if form %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <span class="text-sm p-2 bg-[#f8f8ff] border-l-4 border-red-400 mb-2"><b
+                                    class="font-[600] mr-2">{{ field.label }}:</b> {{ error }}</span>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+                <label for="simple-mde-editor" class="mt-4 w-full">
+                    <textarea name="content" id="simple-mde-editor"
+                              minlength="10">{{ form.content.value|default_if_none:'' }}</textarea>
+                </label>
+                <script type="text/javascript">
+                    const simpleMDE = new SimpleMDE({
+                        element: document.getElementById('simple-mde-editor'),
+                        placeholder: "Type here...",
+                        showIcons: ["code", "table"],
+                        renderingConfig: {
+                            codeSyntaxHighlighting: true,
+                        },
+                    });
+                    simpleMDE.codemirror.on('change', () => {
+                        document.getElementById('simple-mde-editor').innerText = simpleMDE.value();
+                    })
+                </script>
+                <button type="submit" name="submit"
+                            class="p-4 mt-4 ml-auto px-6 rounded-xl bg-[#1f1f1f] hover:bg-black text-white font-Poppins text-sm">
+                    Post Your Answer
+                </button>
+            </form>
+            {% endif %}
         </div>
-        <div class="w-[400px]">
+        <div class="w-[480px]">
+            {% if not thread.is_active %}
+                <div class="bg-white p-6 drop-shadow-sm rounded-xl mb-2">
+                    <p class="font-Poppins font-medium text-sm leading-6">
+                        This thread has been closed
+                    </p>
+                </div>
+            {% endif %}
             <div class="bg-white p-6 drop-shadow-sm rounded-xl mb-2">
                 <span class="text-md font-Rubik font-medium pb-2 block">Comments ({{ comments|length }})</span>
-                {% if user.is_authenticated %}
-                    <form id="comment" method="post" action="{% url 'thread-view' thread.thread_id %}" class="text-sm">
+                {% if user.is_authenticated and thread.is_active %}
+                    <form id="comment" method="post" action="{% url 'new_comment' thread.thread_id %}" class="text-sm">
                         {% csrf_token %}
                         <label>
-                            <textarea class="bg-[#f8f8ff] p-4 resize-vertical rounded-xl w-full outline-none h-fit" name="comment" type="text" placeholder="New Comment"
-                                   minlength="0" maxlength="1000"></textarea>
+                            <textarea class="bg-[#f8f8ff] p-4 resize-vertical rounded-xl w-full outline-none h-fit"
+                                      name="comment" type="text" placeholder="New Comment"
+                                      minlength="0" maxlength="1000"></textarea>
                         </label>
                         <button class="p-2 px-6 bg-[#2a2a2a] rounded-xl text-white my-2 w-full">Comment</button>
                     </form>
@@ -74,11 +165,12 @@
                 {% endif %}
                 <ul class="flex flex-col flex-1 mt-4">
                     {% for comment in comments %}
-                        <li id="{{ comment.comment_id }}" class="flex font-Rubik text-sm flex-1 mb-4">
+                        <li id="{{ comment.comment_id }}" class="comment flex font-Rubik text-sm flex-1 my-2">
                             <p>
                                 {{ comment.comment }}
                                 <span class="mx-1">-</span>
-                                <a class="text-blue-600 whitespace-nowrap " href="/user/{{ comment.author.username }}">{{ comment.author.name }}</a>
+                                <a class="text-blue-600 whitespace-nowrap "
+                                   href="/user/{{ comment.author.username }}">{{ comment.author.name }}</a>
                                 <span class="text-gray-500 mx-2">{{ comment.date_posted }}</span>
                             </p>
                         </li>

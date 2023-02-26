@@ -21,3 +21,7 @@ class NewThreadForm(forms.Form):
 
 class NewCommentForm(forms.Form):
     comment = forms.CharField(required=True, min_length=0, max_length=500)
+
+
+class NewAnswerForm(forms.Form):
+    content = forms.CharField(required=True)

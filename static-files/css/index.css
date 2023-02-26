@@ -51,7 +51,6 @@ body {
     margin-block: 1rem;
     display: block;
     text-align: justify;
-    word-spacing: 2px;
 }
 .content a, .editor-preview a {
     text-decoration: underline;
@@ -126,20 +125,20 @@ body {
 	animation: target-fade 3s ease;
 }
 
-
-/**
- * Keyframe animation definition
- *
- * 1. Insert a color of your choice here
- */
-
 @keyframes target-fade {
-	from { background-color: #e4e4e4; } /* [1] */
+	from { background-color: #e4e4e4; }
 	to { background-color: transparent; }
 }
 
+body::-webkit-scrollbar {
+  width: 4px;
+}
 
+body::-webkit-scrollbar-thumb {
+  background-color: slategray;
+}
 
 .comment p {
     display: inline;
+    color: #1f1f1f;
 }

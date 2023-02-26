@@ -567,14 +567,6 @@ video {
   z-index: 50;
 }
 
-.float-right {
-  float: right;
-}
-
-.float-left {
-  float: left;
-}
-
 .m-2 {
   margin: 0.5rem;
 }
@@ -615,6 +607,11 @@ video {
 .my-6 {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .-mr-8 {
@@ -734,8 +731,8 @@ video {
   width: 36px;
 }
 
-.w-\[500px\] {
-  width: 500px;
+.w-\[400px\] {
+  width: 400px;
 }
 
 .w-\[50px\] {
@@ -751,12 +748,8 @@ video {
   width: 100%;
 }
 
-.w-\[400px\] {
-  width: 400px;
-}
-
-.min-w-\[36px\] {
-  min-width: 36px;
+.w-\[480px\] {
+  width: 480px;
 }
 
 .max-w-\[500px\] {
@@ -1176,7 +1169,6 @@ body {
   margin-block: 1rem;
   display: block;
   text-align: justify;
-  word-spacing: 2px;
 }
 
 .content a, .editor-preview a {
@@ -1259,26 +1251,27 @@ body {
   animation: target-fade 3s ease;
 }
 
-/**
- * Keyframe animation definition
- *
- * 1. Insert a color of your choice here
- */
-
 @keyframes target-fade {
   from {
     background-color: #e4e4e4;
   }
-
-  /* [1] */
 
   to {
     background-color: transparent;
   }
 }
 
+body::-webkit-scrollbar {
+  width: 4px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: slategray;
+}
+
 .comment p {
   display: inline;
+  color: #1f1f1f;
 }
 
 .hover\:bg-\[\#e4e4e4\]:hover {
