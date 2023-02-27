@@ -4,16 +4,16 @@
 
 {% block body %}
     {% include "forum/components/navigation.html" %}
-    <div class="flex items-start p-2 w-full flex-1">
+    <div class="flex items-start p-2 w-full flex-1 relative">
         {% include "forum/components/sidebar.html" %}
-        <div class="flex flex-col bg-white p-8 drop-shadow-sm rounded-xl mx-2 flex-1 h-full">
+        <div class="flex flex-col bg-white p-4 py-8 lg:p-8 drop-shadow-sm rounded-xl lg:mx-2 flex-1 h-full relative">
             <span class="text-xl font-Rubik font-medium pb-8 block">FORUM COMMUNITY</span>
-            <table class="w-full">
+            <table class="">
             {% load tags %}
                 <tr class="flex items-center mb-2 sticky top-0 justify-between bg-[#2a2a2a] text-white p-4 font-Rubik text-xs font-medium rounded-xl">
                     <td class="flex-1">TOPIC</td>
-                    <td class="px-8 w-[100px] text-[#f1f1f1]">REPLIES</td>
-                    <td class="px-8 w-[100px] text-[#f1f1f1]">VIEWS</td>
+                    <td class="hidden lg:block px-8 w-[100px] text-[#f1f1f1]">REPLIES</td>
+                    <td class="hidden lg:block px-8 w-[100px] text-[#f1f1f1]">VIEWS</td>
                 </tr>
                 <tbody>
                 {% load tags %}
@@ -32,11 +32,11 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-8 flex flex-col w-[100px]">
+                        <td class="hidden lg:flex px-8 flex-col w-[100px]">
                             <span class="font-bold text-sm">{{ thread.replies|intcomma }}</span>
                             <span class="font-medium text-[11px] text-gray-500">Replies</span>
                         </td>
-                        <td class="px-8 flex flex-col w-[100px]">
+                        <td class="hidden lg:flex px-8 flex-col w-[100px]">
                             <span class="font-bold text-sm">{{ thread.views|intcomma }}</span>
                             <span class="font-medium text-[11px] text-gray-500">Views</span>
                         </td>

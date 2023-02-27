@@ -11,10 +11,10 @@
     {% include "forum/components/navigation.html" %}
     <div class="flex items-start p-2 w-full flex-1">
         {% include "forum/components/sidebar.html" %}
-        <div class="flex flex-col flex-1">
-            <div class="flex bg-white p-4 drop-shadow-sm rounded-xl mx-2 mb-2 flex-1">
+        <div class="flex flex-col w-full relative">
+            <div class="flex bg-white p-4 drop-shadow-sm rounded-xl lg:mx-2 mb-2 flex-1 overflow-x-hidden relative">
                 <form action="{% url 'vote-thread' thread.thread_id %}" method="post"
-                      class="flex flex-col items-center text-xl p-6 pr-0">
+                      class="hidden lg:flex flex-col items-center text-xl p-2 lg:p-6 pr-0">
                     {% csrf_token %}
                     <button name="vote" value="up" type="submit" {% if user_vote > 0 %}disabled{% endif %}
                             class="fas fa-chevron-up {% if user_vote > 0 %}text-green-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
@@ -22,17 +22,17 @@
                     <button name="vote" value="down" type="submit" {% if user_vote < 0 %}disabled{% endif %}
                             class="fas fa-chevron-down {% if user_vote < 0 %}text-red-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
                 </form>
-                <div class="flex flex-col p-6 flex-1">
-                    <span class="text-3xl font-Roboto pb-2">{{ thread.topic }}</span>
+                <div class="flex flex-col p-2 py-4 lg:p-6 w-full">
+                    <span class="text-2xl lg:text-3xl font-Roboto pb-2">{{ thread.topic }}</span>
                     <div class="flex items-center pb-4 text-xs font-Poppins border-b">
-                        <span class="mr-6">Posted <span
-                                class="font-medium ml-1">{{ thread.date_posted|naturaltime }}</span></span>
-                        {% if thread.content.last_modified %}<span class="mr-6">Modified on <span
-                                class="font-medium ml-1">{{ thread.content.last_modified|naturaltime }}</span></span>{% endif %}
-                        <span class="mr-6">Viewed <span
-                                class="font-medium ml-1">{{ thread.views|intcomma }} times</span></span>
+                        <span class="mr-6 flex flex-col lg:flex-row lg:items-center">Posted <span
+                                class="font-medium lg:ml-1">{{ thread.date_posted|naturaltime }}</span></span>
+                        {% if thread.content.last_modified %}<span class="mr-6 flex flex-col lg:flex-row lg:items-center">Modified on <span
+                                class="font-medium lg:ml-1">{{ thread.content.last_modified|naturaltime }}</span></span>{% endif %}
+                        <span class="mr-6 flex flex-col lg:flex-row lg:items-center">Viewed <span
+                                class="font-medium lg:ml-1">{{ thread.views|intcomma }} times</span></span>
                     </div>
-                    <div class="content" class="font-Roboto py-4">
+                    <div class="content text-sm lg:text-md leading-6 font-Roboto py-4">
                         {{ thread.content.content|to_html|safe }}
                     </div>
                     <div id="tags" class="flex items-center mb-4 flex-wrap">
@@ -64,9 +64,9 @@
                 </div>
             </div>
             {% for answer in answers %}
-                <div id="{{ answer.answer_id }}" class="flex bg-white p-4 drop-shadow-sm rounded-xl mx-2 mb-2 flex-1">
+                <div id="{{ answer.answer_id }}" class="flex bg-white p-4 drop-shadow-sm rounded-xl lg:mx-2 mb-2 flex-1">
                     <form action="{% url 'vote-thread' answer.answer_id %}" method="post"
-                          class="flex flex-col items-center text-xl p-6 pr-0">
+                          class="hidden lg:flex flex-col items-center text-xl p-6 pr-0">
                         {% csrf_token %}
                         <button name="vote" value="up" type="submit" {% if answer.user_vote > 0 %}disabled{% endif %}
                                 class="fas fa-chevron-up {% if answer.user_vote > 0 %}text-green-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
@@ -74,28 +74,28 @@
                         <button name="vote" value="down" type="submit" {% if answer.user_vote < 0 %}disabled{% endif %}
                                 class="fas fa-chevron-down {% if answer.user_vote < 0 %}text-red-600{% endif %} p-2 hover:bg-[#e4e4e4] rounded-full"></button>
                     </form>
-                    <div class="flex flex-col p-6 flex-1">
+                    <div class="flex flex-col p-2 py-6 lg:p-6 w-full overflow-x-hidden">
                         <div class="flex items-center pb-4 font-Poppins border-b">
-                            <span class="mr-6 text-xs">Answered <span
-                                    class="font-medium ml-1">{{ answer.date_posted|naturaltime }}</span></span>
-                            {% if answer.content.last_modified %}<span class="text-xs mr-6">Modified on <span
-                                    class="font-medium ml-1">{{ answer.content.last_modified|naturaltime }}</span></span>{% endif %}
-                            <span class="mr-6 text-xs">Answered by <a href="/user/{{ answer.author.username }}"
-                                                                      class="font-medium ml-1">{{ answer.author.name }}</a></span>
+                            <span class="mr-6 text-xs flex flex-col lg:flex-row lg:items-center">Answered <span
+                                    class="font-medium lg:ml-1">{{ answer.date_posted|naturaltime }}</span></span>
+                            {% if answer.content.last_modified %}<span class="text-xs mr-6 flex flex-col lg:flex-row lg:items-center">Modified on <span
+                                    class="font-medium lg:ml-1">{{ answer.content.last_modified|naturaltime }}</span></span>{% endif %}
+                            <span class="mr-6 text-xs flex flex-col lg:flex-row lg:items-center">Answered by <a href="/user/{{ answer.author.username }}"
+                                                                      class="font-medium lg:ml-1">{{ answer.author.name }}</a></span>
                             <div class="ml-auto text-sm flex items-center">
                                 <i onclick="window.navigator.clipboard.writeText(`${window.location.href}#{{ answer.answer_id }}`).then(() => window.alert('Link copied to clipboard'))" class="fas fa-share-alt mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
                                 {% if user.is_authenticated and user.username == answer.author.username %}<a onclick="document.getElementById('simple-mde-editor').innerText = '{{ answer.content.content|safe }}'" href="#edit-answer" class="fas fa-pencil mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></a>{% endif %}
                                 <i class="far fa-flag mx-2 p-2 hover:bg-[#e4e4e4] rounded-full"></i>
                             </div>
                         </div>
-                        <div class="content" class="font-Roboto py-4">
+                        <div class="content text-sm lg:text-md leading-6 font-Roboto py-4">
                             {{ answer.content.content|to_html|safe }}
                         </div>
                     </div>
                 </div>
             {% endfor %}
             {% if thread.is_active and user.is_authenticated %}
-                <form id="edit-answer" method="post" action="{% url 'new_answer' thread.thread_id %}" class="flex flex-col bg-white p-6 drop-shadow-sm rounded-xl mx-2 mb-2 flex-1">
+                <form id="edit-answer" method="post" action="{% url 'new_answer' thread.thread_id %}" class="flex flex-col bg-white p-6 drop-shadow-sm rounded-xl lg:mx-2 mb-2 flex-1">
                 {% csrf_token %}
                 <span class="text-xl font-Rubik font-medium p-4 block">
                     Your Answer
@@ -137,14 +137,14 @@
                 </button>
             </form>
             {% else %}
-                <div class="flex flex-col bg-white p-6 drop-shadow-sm rounded-xl mx-2 mb-2 flex-1">
+                <div class="flex flex-col bg-white p-6 drop-shadow-sm rounded-xl w-full overflow-x-hidden relative">
                     <p class="font-Poppins font-medium px-2 text-sm leading-6">
                         Log in to answer
                     </p>
                 </div>
             {% endif %}
         </div>
-        <div class="w-[480px]">
+        <div class="hidden lg:block w-[480px]">
             {% if not thread.is_active %}
                 <div class="bg-white p-6 drop-shadow-sm rounded-xl mb-2">
                     <p class="font-Poppins font-medium text-sm leading-6">
